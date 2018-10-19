@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ahmedmagdy.theclinic.activities.DoctorProfileActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/lin">
+
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp">
+
+            <ImageView
+                android:id="@+id/edit_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_account_box" />
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_margin="15dp"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Name"
+                    android:textColor="#000"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
+                    />
+                <TextView
+                    android:id="@+id/edit1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Edit"
+                    android:textColor="#0826e7"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="State/ City"
+                    android:textColor="#000"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
+                    />
+                <TextView
+                    android:id="@+id/edit2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Edit"
+                    android:textColor="#0826e7"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    />
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="specialty"
+                    android:textColor="#000"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
+                    />
+                <TextView
+                    android:id="@+id/edit3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Edit"
+                    android:textColor="#0826e7"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Degree"
+                    android:textColor="#000"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
+                    />
+                <TextView
+                    android:id="@+id/edit4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Edit"
+                    android:textColor="#0826e7"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Phone Number"
+                    android:textColor="#000"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
+                    />
+                <TextView
+                    android:id="@+id/edit5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Edit"
+                    android:textColor="#0826e7"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Detection price"
+                    android:textColor="#000"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
+                    />
+                <TextView
+                    android:id="@+id/edit6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="Edit"
+                    android:textColor="#0826e7"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="Average detection time:"
+                android:textColor="#000"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="10 min"
+                android:textColor="#000"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
+                />
+            <TextView
+                android:id="@+id/edit8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="Edit"
+                android:textColor="#0826e7"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                />
+        </LinearLayout>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:maxLines="5"
+            android:inputType="text"
+            android:layout_gravity="top"
+            android:layout_margin="15dp"
+            android:background="@drawable/textboxx"
+            android:hint="What about you" />
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="Working hours"
+            android:textColor="#838384"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            />
+        <ListView
+            android:id="@+id/list_view_booking"
+            android:layout_below="@+id/add_tramp_h"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
