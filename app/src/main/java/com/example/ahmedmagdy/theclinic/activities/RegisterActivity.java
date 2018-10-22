@@ -111,8 +111,8 @@ public class RegisterActivity extends AppCompatActivity  {
                 DatePickerDialog mPickerDialog =  new DatePickerDialog(RegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int Year, int Month, int Day) {
-                        editTextcal.setText(Year+"_"+ Month+1+"_"+Day);
-                        mCurrentDate.set(Year, Month+1,Day);
+                        editTextcal.setText(Year+"_"+ ((Month/10)+1)+"_"+Day);
+                        mCurrentDate.set(Year, ((Month/10)+1),Day);
                         //   mImageGenerator.generateDateImage(mCurrentDate, R.drawable.empty_calendar);
                     }
                 }, year, month, day);

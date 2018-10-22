@@ -9,46 +9,30 @@ import java.io.Serializable;
 public class DoctorFirebaseClass implements Serializable {
     private String cId;
     private String cName;
-    private String cAddress;
+    private String cSpecialty;
     private String cCity;
     private String cUri;
-    private String userUri;
-    private String username;
-    private String pdate;
-    private String userid;
     private Boolean checked;
-    private String organizationId;
-    private String organizationName;
 
 
     public DoctorFirebaseClass(){}
 
-    public DoctorFirebaseClass(String cId, String cName, String cAddress, String cCity, String cUri,
-                               String userUri, String username, String pdate, String userid, Boolean checked, String organizationId, String organizationName) {
+    public DoctorFirebaseClass(String cId, String cName, String cSpecialty, String cCity, String cUri, Boolean checked) {
         this.cName = cName;
-        this.cAddress = cAddress;
+        this.cSpecialty = cSpecialty;
         this.cCity = cCity;
         this.cUri = cUri;
-        this.userUri = userUri;
-        this.username = username;
-        this.pdate = pdate;
-        this.userid = userid;
+
         this.cId = cId;
         this.checked = checked;
-        this.organizationId = organizationId;
-        this.organizationName = organizationName;
+
     }
 
-    public DoctorFirebaseClass(String cId, String cName, String cAddress, String cCity, String cUri,
-                               String userUri, String username, String pdate, String userid) {
+    public DoctorFirebaseClass(String cId, String cName, String cSpecialty, String cCity, String cUri) {
         this.cName = cName;
-        this.cAddress = cAddress;
+        this.cSpecialty = cSpecialty;
         this.cCity = cCity;
         this.cUri = cUri;
-        this.userUri = userUri;
-        this.username = username;
-        this.pdate = pdate;
-        this.userid = userid;
         this.cId = cId;
     }
 
@@ -56,8 +40,8 @@ public class DoctorFirebaseClass implements Serializable {
         return cName;
     }
 
-    public String getcAddress() {
-        return cAddress;
+    public String getcSpecialty() {
+        return cSpecialty;
     }
 
     public String getcCity() {
@@ -68,25 +52,9 @@ public class DoctorFirebaseClass implements Serializable {
         return cUri;
     }
 
-    public String getUserUri() {
-        return userUri;
-    }
 
-    public String getUsername() {
-        return username;
-    }
 
-    public String getPdate() {
-        return pdate;
-    }
 
-    public String getUserId() {
-        return userid;
-    }
-
-    public boolean isOwner(String id) {
-        return id.equals(getUserId());
-    }
 
     public String getcId() {
         return cId;
@@ -104,18 +72,6 @@ public class DoctorFirebaseClass implements Serializable {
         this.checked = checked;
     }
 
-    public void setOrganizationId(String organizationId) {
-        this.organizationId = organizationId;
-    }
 
-    public String getOrganizationId() {
-        return organizationId;
-    }
-
-    public void setOrganizationName(String organizationName) {this.organizationName = organizationName;}
-
-    public String getOrganizationName() {
-        return organizationName;
-    }
 }
 
