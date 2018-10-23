@@ -15,7 +15,7 @@
         android:id="@+id/linearLayout">
 
         <ImageView
-            android:id="@+id/tramp_photo"
+            android:id="@+id/doctor_photo"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_centerHorizontal="true"

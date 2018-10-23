@@ -41,7 +41,7 @@
         android:text="Add a tramp"/>
 
     <ListView
-        android:id="@+id/list_view_tramp"
+        android:id="@+id/list_view_doctor"
         android:layout_below="@+id/add_tramp_h"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

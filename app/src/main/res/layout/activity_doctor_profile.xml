@@ -29,10 +29,10 @@
             <ImageView
                 android:id="@+id/edit_photo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:scaleType="center"
+                android:scaleType="fitXY"
                 android:src="@drawable/ic_account_box" />
             <ProgressBar
                 android:id="@+id/progressbar"
@@ -57,6 +57,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/pname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
@@ -83,6 +84,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/ppcity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
@@ -110,10 +112,11 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/pspeciality"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
-                    android:text="specialty"
+                    android:text="Specialty"
                     android:textColor="#000"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
 
@@ -135,6 +138,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/pdegree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
@@ -159,6 +163,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/pphone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
@@ -184,6 +189,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/pprice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
@@ -223,6 +229,7 @@
 
                 />
             <TextView
+                android:id="@+id/ptime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
@@ -232,7 +239,7 @@
 
                 />
             <TextView
-                android:id="@+id/edit8"
+                android:id="@+id/edit7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
@@ -242,6 +249,7 @@
                 />
         </LinearLayout>
         <EditText
+            android:id="@+id/peditbox"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:maxLines="5"
@@ -250,20 +258,50 @@
             android:layout_margin="15dp"
             android:background="@drawable/textboxx"
             android:hint="What about you" />
-        <TextView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="Working hours"
+                android:textColor="#838384"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                />
+            <TextView
+                android:id="@+id/add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="Add"
+                android:textColor="#0826e7"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                />
+        </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/add_book"
+        >
+           <ListView
+            android:id="@+id/list_view_booking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+               android:paddingLeft="10dp"
+               />
+        <ProgressBar
+            android:id="@+id/booking_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:text="Working hours"
-            android:textColor="#838384"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
             />
-        <ListView
-            android:id="@+id/list_view_booking"
-            android:layout_below="@+id/add_tramp_h"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
 
     </LinearLayout>
 

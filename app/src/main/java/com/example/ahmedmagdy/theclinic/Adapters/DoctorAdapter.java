@@ -27,7 +27,7 @@ import java.util.List;
 
 public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements Filterable {
     private Activity context;
-    private List<DoctorFirebaseClass> doctorList;
+    List<DoctorFirebaseClass> doctorList;
     private List<DoctorFirebaseClass> mSearchList;
 
     private String a1;
@@ -48,7 +48,7 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
         final TextView adoctorcity = (TextView) listViewItem.findViewById(R.id.doctor_city);
 
 
-        final ImageView adoctorphoto = (ImageView) listViewItem.findViewById(R.id.tramp_photo);
+        final ImageView adoctorphoto = (ImageView) listViewItem.findViewById(R.id.doctor_photo);
 
         DoctorFirebaseClass doctorclass = doctorList.get(position);
         //asize = trampList.size();

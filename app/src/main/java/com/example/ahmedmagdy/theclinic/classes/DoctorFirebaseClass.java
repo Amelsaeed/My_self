@@ -12,12 +12,20 @@ public class DoctorFirebaseClass implements Serializable {
     private String cSpecialty;
     private String cCity;
     private String cUri;
+
+    private String cDegree;
+    private String cPhone;
+    private String cPrice;
+    private String cTime;
+    private String cAbout;
+
     private Boolean checked;
 
 
     public DoctorFirebaseClass(){}
 
-    public DoctorFirebaseClass(String cId, String cName, String cSpecialty, String cCity, String cUri, Boolean checked) {
+    public DoctorFirebaseClass(String cId, String cName, String cSpecialty, String cCity, String cUri,
+                               String cDegree,String cPhone,String cPrice,String cTime,String cAbout , Boolean checked) {
         this.cName = cName;
         this.cSpecialty = cSpecialty;
         this.cCity = cCity;
@@ -25,6 +33,12 @@ public class DoctorFirebaseClass implements Serializable {
 
         this.cId = cId;
         this.checked = checked;
+
+        this.cDegree = cDegree;
+        this.cPhone = cPhone;
+        this.cPrice = cPrice;
+        this.cTime = cTime;
+        this.cAbout = cAbout;
 
     }
 
@@ -34,6 +48,12 @@ public class DoctorFirebaseClass implements Serializable {
         this.cCity = cCity;
         this.cUri = cUri;
         this.cId = cId;
+
+        this.cDegree = cDegree;
+        this.cPhone = cPhone;
+        this.cPrice = cPrice;
+        this.cTime = cTime;
+        this.cAbout = cAbout;
     }
 
     public String getcName() {
@@ -53,8 +73,49 @@ public class DoctorFirebaseClass implements Serializable {
     }
 
 
+    public void setcId(String cId) {
+        this.cId = cId;
+    }
 
+    public String getcDegree() {
+        return cDegree;
+    }
 
+    public void setcDegree(String cDegree) {
+        this.cDegree = cDegree;
+    }
+
+    public String getcPhone() {
+        return cPhone;
+    }
+
+    public void setcPhone(String cPhone) {
+        this.cPhone = cPhone;
+    }
+
+    public String getcPrice() {
+        return cPrice;
+    }
+
+    public void setcPrice(String cPrice) {
+        this.cPrice = cPrice;
+    }
+
+    public String getcTime() {
+        return cTime;
+    }
+
+    public void setcTime(String cTime) {
+        this.cTime = cTime;
+    }
+
+    public String getcAbout() {
+        return cAbout;
+    }
+
+    public void setcAbout(String cAbout) {
+        this.cAbout = cAbout;
+    }
 
     public String getcId() {
         return cId;

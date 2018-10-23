@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/My-Clinic.iml" filepath="$PROJECT_DIR$/My-Clinic.iml" />
-      <module fileurl="file://D:\android train\applications\my clinic 1\my clinic 22-10-2018\My-Clinic\My-Clinic.iml" filepath="D:\android train\applications\my clinic 1\my clinic 22-10-2018\My-Clinic\My-Clinic.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://D:\android train\applications\my clinic 1\my clinic 22-10-2018\My-Clinic\app\app.iml" filepath="D:\android train\applications\my clinic 1\my clinic 22-10-2018\My-Clinic\app\app.iml" />
     </modules>
   </component>
 </project>

@@ -8,8 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -40,11 +42,11 @@ public class AllDoctorActivity extends AppCompatActivity {
     private DatabaseReference databaseReg;
     String type,country;
     SearchView searchView;
-    Button addTrampButton;
+   // Button addTrampButton;
     private ProgressBar progressBar;
 
-    ListView listViewTramp;
-    List<DoctorFirebaseClass> doctorList;
+    ListView listViewDoctor;
+    private List<DoctorFirebaseClass> doctorList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +60,10 @@ public class AllDoctorActivity extends AppCompatActivity {
         databaseDoctor = FirebaseDatabase.getInstance().getReference("Doctordb");
         mStorageRef = FirebaseStorage.getInstance().getReference("Photos");
         databaseReg = FirebaseDatabase.getInstance().getReference("reg_data");
-        listViewTramp= (ListView)findViewById(R.id.list_view_tramp);
+        listViewDoctor= (ListView)findViewById(R.id.list_view_doctor);
         searchView = (SearchView) findViewById(R.id.search);
         doctorList=new ArrayList<>();
-        listViewTramp.setTextFilterEnabled(true);
+        listViewDoctor.setTextFilterEnabled(true);
         removeFocus();
 
         addDoctorButton.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +72,26 @@ public class AllDoctorActivity extends AppCompatActivity {
                 // Code here executes on main thread after user presses button
                 Intent it = new Intent(AllDoctorActivity.this, AddDoctorActivity.class);
                 startActivity(it);
+            }
+        });
+
+        listViewDoctor.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
+                // TODO Auto-generated method stub
+                DoctorFirebaseClass doctorclass = doctorList.get(position);
+                Log.v("long clicked","pos: " + position);
+                Intent intent =new Intent(getApplicationContext(), DoctorProfileActivity.class);
+                intent.putExtra("DoctorID", doctorclass.getcId());
+                intent.putExtra("DoctorName", doctorclass.getcName());
+                intent.putExtra("DoctorCity", doctorclass.getcCity());
+                intent.putExtra("DoctorSpecialty", doctorclass.getcSpecialty());
+                intent.putExtra("DoctorUri", doctorclass.getcUri());
+
+
+                startActivity(intent);
+
+                return true;
             }
         });
     }
@@ -126,9 +148,9 @@ public class AllDoctorActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         doctorList.clear();
-                        for(DataSnapshot trampSnapshot: dataSnapshot.getChildren()){
-                           DoctorFirebaseClass hometramp=trampSnapshot.getValue(DoctorFirebaseClass.class);
-                            doctorList.add(0,hometramp);// i= 0  (index)to start from top
+                        for(DataSnapshot doctorSnapshot: dataSnapshot.getChildren()){
+                           DoctorFirebaseClass doctorclass=doctorSnapshot.getValue(DoctorFirebaseClass.class);
+                            doctorList.add(0,doctorclass);// i= 0  (index)to start from top
 
 
 
@@ -137,7 +159,7 @@ public class AllDoctorActivity extends AppCompatActivity {
                         //}
                         DoctorAdapter adapter = new DoctorAdapter(AllDoctorActivity.this, doctorList);
                         //adapter.notifyDataSetChanged();
-                        listViewTramp.setAdapter(adapter);
+                        listViewDoctor.setAdapter(adapter);
                         setupSearchView();
                         progressBar.setVisibility(View.GONE);
                         // listViewTramp.setAdapter(adapter);
@@ -167,9 +189,9 @@ public class AllDoctorActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (TextUtils.isEmpty(newText)) {
-                    listViewTramp.clearTextFilter();
+                    listViewDoctor.clearTextFilter();
                 } else {
-                    listViewTramp.setFilterText(newText);
+                    listViewDoctor.setFilterText(newText);
                 }
                 return true;
             }
