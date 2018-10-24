@@ -2,6 +2,7 @@ package com.example.ahmedmagdy.theclinic.Adapters;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,9 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmedmagdy.theclinic.R;
-import com.example.ahmedmagdy.theclinic.activities.RegisterActivity;
+import com.example.ahmedmagdy.theclinic.activities.DoctorProfileActivity;
 import com.example.ahmedmagdy.theclinic.classes.BookingClass;
-import com.example.ahmedmagdy.theclinic.classes.DoctorFirebaseClass;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kd.dynamic.calendar.generator.ImageGenerator;
 
 import java.util.Calendar;
@@ -29,14 +34,29 @@ import java.util.List;
 
 public class BookingAdapter extends ArrayAdapter<BookingClass> {
 
+
     private Activity context;
     List<BookingClass> bookingList;
+    /**public String id;
+    public String doctorID;
 
-    public BookingAdapter(Activity context, List<BookingClass> bookingList) {
-        super(context, R.layout.list_layout_booking, bookingList);
+    public BookingAdapter(DoctorProfileActivity context , List<BookingClass> bookingList, String id, String doctorID) {
+        super((Context) context, R.layout.list_layout_booking, bookingList);
+
+        this.context = context;
+        this.bookingList = bookingList;
+        this.id = id;
+        this.doctorID = doctorID;
+    }**/
+
+    public BookingAdapter( Activity context, List<BookingClass> bookingList) {
+        super((Context) context, R.layout.list_layout_booking, bookingList);
+
         this.context = context;
         this.bookingList = bookingList;
     }
+
+
 
     @NonNull
     @Override
@@ -80,11 +100,12 @@ public class BookingAdapter extends ArrayAdapter<BookingClass> {
                 DatePickerDialog mPickerDialog =  new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int Year, int Month, int Day) {
-                       String gg= Year+"_"+ (Month+1)+"_"+Day;
-                        Toast.makeText(context, gg, Toast.LENGTH_LONG).show();
-
+                       String datedmy= Year+"_"+ (Month+1)+"_"+Day;
+                        Toast.makeText(context, datedmy, Toast.LENGTH_LONG).show();
+                       // Toast.makeText(context, id+doctorID, Toast.LENGTH_LONG).show();
+//getbookdata();
                         //editTextcal.setText(Year+"_"+ ((Month/10)+1)+"_"+Day);
-                        mCurrentDate.set(Year, ((Month/10)+1),Day);
+                        mCurrentDate.set(Year, ((Month+1)),Day);
                         //   mImageGenerator.generateDateImage(mCurrentDate, R.drawable.empty_calendar);
                     }
                 }, year, month, day);
@@ -97,5 +118,26 @@ public class BookingAdapter extends ArrayAdapter<BookingClass> {
         abookingaddress.setText(bookingclass.getCbaddress());
         return listViewItem;
     }
+/**
+    private void getbookdata() {
+        final DatabaseReference databaseBooking = FirebaseDatabase.getInstance().getReference("bookingdb").child(DoctorID);
+
+        ////import data of country and tope
+            ValueEventListener postListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    type = dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("ctype").getValue(String.class);
+                    country = dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("ccountry").getValue(String.class);
+                    maketable();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                }
+            };
+            databaseReg .addValueEventListener(postListener);
+    }**/
 
 }

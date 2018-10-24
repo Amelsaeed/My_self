@@ -1,15 +1,18 @@
 package com.example.ahmedmagdy.theclinic.activities;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -20,9 +23,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 //import com.example.ahmedmagdy.theclinic.Adapters.DoctorAdapter;
 import com.example.ahmedmagdy.theclinic.Adapters.BookingAdapter;
-import com.example.ahmedmagdy.theclinic.Adapters.DoctorAdapter;
 import com.example.ahmedmagdy.theclinic.R;
 import com.example.ahmedmagdy.theclinic.classes.BookingClass;
+import com.example.ahmedmagdy.theclinic.classes.BookingTimesClass;
+import com.example.ahmedmagdy.theclinic.classes.DoctorFirebaseClass;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,8 +35,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kd.dynamic.calendar.generator.ImageGenerator;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class DoctorProfileActivity extends AppCompatActivity {
@@ -198,7 +204,96 @@ public class DoctorProfileActivity extends AppCompatActivity {
 
             }
         });**/
+
+        listViewBooking.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
+                // TODO Auto-generated method stub
+                BookingClass bookingclass = bookingList.get(position);
+               final String timeID= bookingclass.getCbid();
+                Toast.makeText(DoctorProfileActivity.this, timeID, Toast.LENGTH_LONG).show();
+
+                ///***********************calender***********************************************//
+                ImageGenerator mImageGenerator = new ImageGenerator(DoctorProfileActivity.this);
+
+// Set the icon size to the generated in dip.
+                mImageGenerator.setIconSize(50, 50);
+
+// Set the size of the date and month font in dip.
+                mImageGenerator.setDateSize(30);
+                mImageGenerator.setMonthSize(10);
+
+// Set the position of the date and month in dip.
+                mImageGenerator.setDatePosition(42);
+                mImageGenerator.setMonthPosition(14);
+
+// Set the color of the font to be generated
+                mImageGenerator.setDateColor(Color.parseColor("#3c6eaf"));
+                mImageGenerator.setMonthColor(Color.WHITE);
+/**
+                abookingphoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {**/
+                        final Calendar mCurrentDate = Calendar.getInstance();
+                        int year=mCurrentDate.get(Calendar.YEAR);
+                        int month=mCurrentDate.get(Calendar.MONTH);
+                        int day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
+                        DatePickerDialog mPickerDialog =  new DatePickerDialog(DoctorProfileActivity.this, new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int Year, int Month, int Day) {
+                                String datedmy= Year+"_"+ (Month+1)+"_"+Day;
+                                Toast.makeText(DoctorProfileActivity.this, datedmy, Toast.LENGTH_LONG).show();
+                                // Toast.makeText(context, id+doctorID, Toast.LENGTH_LONG).show();
+                        makepatientbooking(timeID, datedmy);
+                                //editTextcal.setText(Year+"_"+ ((Month/10)+1)+"_"+Day);
+                                mCurrentDate.set(Year, ((Month+1)),Day);
+                                //   mImageGenerator.generateDateImage(mCurrentDate, R.drawable.empty_calendar);
+                            }
+                        }, year, month, day);
+                        mPickerDialog.show();
+                  //  }
+              //  });
+                ///***********************calender***********************************************//
+
+
+                return true;
+            }
+        });
+
     }
+
+    private void makepatientbooking(final String timeID, final String datedmy) {
+
+        /*************************************/
+        final ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String patientname = dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("cname").getValue(String.class);
+                String patientage = dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("cBirthDay").getValue(String.class);
+                ////to do/////////-------------------------------------------------------------
+                final DatabaseReference databasetimeBooking = FirebaseDatabase.getInstance().getReference("bookingtimes").child(DoctorID).child(timeID).child(datedmy);
+                DatabaseReference reference = databasetimeBooking.push();
+                String timesid = reference.getKey();
+                //Log.v("Data"," 2-User id :"+ mUserId);
+                BookingTimesClass bookingtimesclass = new BookingTimesClass(timesid, patientname, patientage);
+
+                // Database for Account Activity
+                databaseDoctor.child(DoctorID).child(timeID)
+                        .child(datedmy)
+                        .child(timesid).setValue(bookingtimesclass);
+                //////////////////////*******-----------------
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+            }
+        };
+        databaseReg .addValueEventListener(postListener);
+        /*************************************/
+
+    }
+////////////////////////////////////////////
     private void editDialog(final String whatdata) {
 
         // databaseDoctor.child("Egypt").child("User").child("users").child(DoctorID).child("cName").setValue("fathy");
@@ -338,12 +433,15 @@ private void editDialogbook() {
             DatabaseReference reference = databaseBooking.push();
             String id = reference.getKey();
             //Log.v("Data"," 2-User id :"+ mUserId);
-            BookingClass bookingclass = new BookingClass(id, gettime, getaddress);
-
+            BookingClass bookingclass = new BookingClass(id, gettime, getaddress,DoctorID);
+           // BookingAdapter myAdapter = new BookingAdapter(DoctorProfileActivity.this, bookingList, id, DoctorID);
             // Database for Account Activity
             databaseBooking.child(id).setValue(bookingclass);
 
             dialog.dismiss();
+            //to refresh activity as you need to go back activity and return
+            finish();
+            startActivity(getIntent());
 
         }
     });
