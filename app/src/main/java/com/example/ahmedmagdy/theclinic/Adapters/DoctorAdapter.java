@@ -60,13 +60,14 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
 
         a1=doctorclass.getcUri();
 
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions = requestOptions.transforms(new RoundedCorners(16));
+       /** RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.transforms(new RoundedCorners(16));**/
         //requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(16));
 
         Glide.with(context)
                 .load(a1)
-                .apply(requestOptions)
+                .apply(RequestOptions.circleCropTransform())
+               // .apply(requestOptions)
                 .into(adoctorphoto);
 
         return listViewItem;

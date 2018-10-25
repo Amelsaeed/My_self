@@ -74,6 +74,7 @@
                             android:textColorHint="#9c9999"
                             android:drawablePadding="10dp"
                             android:textSize="13dp"
+                            android:paddingRight="40dp"
                             />
                     </LinearLayout>
 
@@ -109,6 +110,8 @@
                             android:textSize="13dp"
                             android:letterSpacing="0.1"
                             android:layout_weight="1"
+                            android:paddingRight="40dp"
+
                             />
 
                     </LinearLayout>
@@ -147,6 +150,8 @@
                             android:textSize="13dp"
                             android:letterSpacing="0.1"
                             android:layout_weight="1"
+                            android:paddingRight="40dp"
+
                             />
 
                     </LinearLayout>

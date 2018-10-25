@@ -13,23 +13,37 @@
         >
 
 
+            <TextView
+                android:id="@+id/pname"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="Name"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
+                />
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_below="@+id/pname"
         android:id="@+id/lin">
 
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="5dp">
+            android:layout_weight="1">
 
             <ImageView
                 android:id="@+id/edit_photo"
                 android:layout_width="wrap_content"
-                android:layout_height="200dp"
+                android:layout_height="150dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:scaleType="fitXY"
@@ -51,37 +65,10 @@
             android:orientation="vertical">
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/pname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="Name"
-                    android:textColor="#000"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-
-                    />
-                <TextView
-                    android:id="@+id/edit1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="Edit"
-                    android:textColor="#0826e7"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                    />
-            </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+
+
 
                 <TextView
                     android:id="@+id/ppcity"
@@ -90,26 +77,13 @@
                     android:paddingLeft="10dp"
                     android:text="State/ City"
                     android:textColor="#000"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
 
                     />
-                <TextView
-                    android:id="@+id/edit2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="Edit"
-                    android:textColor="#0826e7"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                    />
-            </LinearLayout>
 
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+
 
                 <TextView
                     android:id="@+id/pspeciality"
@@ -118,24 +92,11 @@
                     android:paddingLeft="10dp"
                     android:text="Specialty"
                     android:textColor="#000"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
 
                     />
-                <TextView
-                    android:id="@+id/edit3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="Edit"
-                    android:textColor="#0826e7"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                    />
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+
 
                 <TextView
                     android:id="@+id/pdegree"
@@ -144,23 +105,10 @@
                     android:paddingLeft="10dp"
                     android:text="Degree"
                     android:textColor="#000"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
 
                     />
-                <TextView
-                    android:id="@+id/edit4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="Edit"
-                    android:textColor="#0826e7"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+
 
                 <TextView
                     android:id="@+id/pphone"
@@ -169,24 +117,11 @@
                     android:paddingLeft="10dp"
                     android:text="Phone Number"
                     android:textColor="#000"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
 
                     />
-                <TextView
-                    android:id="@+id/edit5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="Edit"
-                    android:textColor="#0826e7"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                    />
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+
 
                 <TextView
                     android:id="@+id/pprice"
@@ -195,19 +130,10 @@
                     android:paddingLeft="10dp"
                     android:text="Detection price"
                     android:textColor="#000"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
 
                     />
-                <TextView
-                    android:id="@+id/edit6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="Edit"
-                    android:textColor="#0826e7"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                    />
-            </LinearLayout>
+
 
 
 
@@ -225,7 +151,7 @@
                 android:paddingLeft="10dp"
                 android:text="Average detection time:"
                 android:textColor="#000"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
 
                 />
             <TextView
@@ -235,18 +161,10 @@
                 android:paddingLeft="10dp"
                 android:text="10 min"
                 android:textColor="#000"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
 
                 />
-            <TextView
-                android:id="@+id/edit7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:text="Edit"
-                android:textColor="#0826e7"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                />
+
         </LinearLayout>
         <EditText
             android:id="@+id/peditbox"
@@ -254,7 +172,8 @@
             android:layout_height="100dp"
             android:maxLines="5"
             android:inputType="text"
-            android:layout_gravity="top"
+            android:gravity="start"
+            android:padding="10dp"
             android:layout_margin="15dp"
             android:background="@drawable/textboxx"
             android:hint="What about you" />

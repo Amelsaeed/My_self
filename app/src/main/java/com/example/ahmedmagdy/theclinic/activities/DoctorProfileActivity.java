@@ -9,7 +9,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
@@ -26,7 +27,6 @@ import com.example.ahmedmagdy.theclinic.Adapters.BookingAdapter;
 import com.example.ahmedmagdy.theclinic.R;
 import com.example.ahmedmagdy.theclinic.classes.BookingClass;
 import com.example.ahmedmagdy.theclinic.classes.BookingTimesClass;
-import com.example.ahmedmagdy.theclinic.classes.DoctorFirebaseClass;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -78,13 +78,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
         pphone = (TextView) findViewById(R.id.pphone);
         pprice = (TextView) findViewById(R.id.pprice);
         ptime = (TextView) findViewById(R.id.ptime);
-        pedit1 = (TextView) findViewById(R.id.edit1);
-        pedit2 = (TextView) findViewById(R.id.edit2);
-        pedit3 = (TextView) findViewById(R.id.edit3);
-        pedit4 = (TextView) findViewById(R.id.edit4);
-        pedit5 = (TextView) findViewById(R.id.edit5);
-        pedit6 = (TextView) findViewById(R.id.edit6);
-        pedit7 = (TextView) findViewById(R.id.edit7);
+
         peditbox = (EditText) findViewById(R.id.peditbox);
         ppicuri = (ImageView) findViewById(R.id.edit_photo);
         paddbook = (TextView) findViewById(R.id.add);
@@ -102,6 +96,13 @@ public class DoctorProfileActivity extends AppCompatActivity {
     pname.setText(DoctorName);
     pcity.setText(DoctorCity);
     pspeciality.setText(DoctorSpecialty);
+        pdegree.setText("Degree");
+        pphone.setText("Phone No.");
+        pprice.setText("Price");
+        ptime.setText("20 min.");
+
+
+
 
         Glide.with(DoctorProfileActivity.this)
                 .load(DoctorUri)
@@ -110,53 +111,102 @@ public class DoctorProfileActivity extends AppCompatActivity {
         getallData();
 
 
-        pedit1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        pname.setOnLongClickListener(new View.OnLongClickListener() {
+                    public boolean onLongClick(View view) {
                 String whatdata = "Name";
                 editDialog(whatdata);
+                return true;
             }
         });
-        pedit2.setOnClickListener(new View.OnClickListener() {
+        pname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Code here executes on main thread after user presses button
+                Toast.makeText(DoctorProfileActivity.this, "Doctor's name", Toast.LENGTH_LONG).show();
+            }
+        });
+        pcity.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
                 String whatdata = "State/ City";
                 editDialog(whatdata);
+                return true;
             }
         });
-        pedit3.setOnClickListener(new View.OnClickListener() {
+        pcity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Code here executes on main thread after user presses button
+                Toast.makeText(DoctorProfileActivity.this, "Doctor's state and city", Toast.LENGTH_LONG).show();
+            }
+        });
+        pspeciality.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
                 String whatdata = "Specialty";
                 editDialog(whatdata);
+                return true;
             }
         });
-        pedit4.setOnClickListener(new View.OnClickListener() {
+        pspeciality.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Code here executes on main thread after user presses button
+                Toast.makeText(DoctorProfileActivity.this, "Doctor's specialty", Toast.LENGTH_LONG).show();
+            }
+        });
+        pdegree.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
                 String whatdata = "Degree";
                 editDialog(whatdata);
+                return true;
             }
         });
-        pedit5.setOnClickListener(new View.OnClickListener() {
+        pdegree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Code here executes on main thread after user presses button
+                Toast.makeText(DoctorProfileActivity.this, "Doctor's degree", Toast.LENGTH_LONG).show();
+            }
+        });
+        pphone.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
                 String whatdata = "Phone Number";
                 editDialog(whatdata);
+                return true;
             }
         });
-        pedit6.setOnClickListener(new View.OnClickListener() {
+        pphone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Code here executes on main thread after user presses button
+                Toast.makeText(DoctorProfileActivity.this, "Doctor's Phone Number", Toast.LENGTH_LONG).show();
+            }
+        });
+        pprice.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
                 String whatdata = "Detection price";
                 editDialog(whatdata);
+                return true;
             }
         });
-        pedit7.setOnClickListener(new View.OnClickListener() {
+        pprice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Code here executes on main thread after user presses button
+                Toast.makeText(DoctorProfileActivity.this, "Detection price", Toast.LENGTH_LONG).show();
+            }
+        });
+        ptime.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
                 String whatdata = "Average detection time in min";
                 editDialog(whatdata);
+                return true;
+            }
+        });
+        ptime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Code here executes on main thread after user presses button
+                Toast.makeText(DoctorProfileActivity.this, "Average detection time in min", Toast.LENGTH_LONG).show();
             }
         });
         paddbook.setOnClickListener(new View.OnClickListener() {
@@ -169,10 +219,10 @@ public class DoctorProfileActivity extends AppCompatActivity {
 
         ////////////////////////////////
 
-        /**peditbox.addTextChangedListener(new TextWatcher() {
+        peditbox.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-            final String about = peditbox.getText().toString().trim();
+            final String about1 = peditbox.getText().toString().trim();
 
                 final ValueEventListener postListener2 = new ValueEventListener() {
                     @Override
@@ -181,7 +231,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
                         type = dataSnapshot5.child(mAuth.getCurrentUser().getUid()).child("ctype").getValue(String.class);
                         country = dataSnapshot5.child(mAuth.getCurrentUser().getUid()).child("ccountry").getValue(String.class);
                         // maketable();
-                     databaseDoctor.child(country).child(type).child("users").child(DoctorID).child("cAbout").setValue(about);
+                     databaseDoctor.child(country).child(type).child("users").child(DoctorID).child("cAbout").setValue(about1);
                       // databaseDoctor.child("Egypt").child("User").child("users").child("-LPNTQiOo29mHsGHlXtR").child("cAbout").setValue(about);
                     }
 
@@ -190,7 +240,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
                         // Getting Post failed, log a message
                     }
                 };
-                databaseDoctor.addValueEventListener(postListener2);
+                databaseReg.addValueEventListener(postListener2);
             }
 
             @Override
@@ -203,7 +253,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
                                       int before, int count) {
 
             }
-        });**/
+        });
 
         listViewBooking.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -381,13 +431,27 @@ public class DoctorProfileActivity extends AppCompatActivity {
                 String DoctorPhone = dataSnapshot1.child(country).child(type).child("users").child(DoctorID).child("cPhone").getValue(String.class);
                 String DoctorPrice = dataSnapshot1.child(country).child(type).child("users").child(DoctorID).child("cPrice").getValue(String.class);
                 String DoctorTime = dataSnapshot1.child(country).child(type).child("users").child(DoctorID).child("cTime").getValue(String.class);
-                pname.setText(DoctorName);
-                pcity.setText(DoctorCity);
-                pspeciality.setText(DoctorSpecialty);
-                pdegree.setText(DoctorDegree);
-                pphone.setText(DoctorPhone);
-                pprice.setText(DoctorPrice);
-                ptime.setText(DoctorTime+"min.");
+                if(DoctorName != null) {
+                    pname.setText(DoctorName);
+                }else{pname.setText("Name");}
+                if(DoctorCity != null) {
+                    pcity.setText(DoctorCity);
+                }else{pcity.setText("State/ City");}
+                if(DoctorSpecialty != null) {
+                    pspeciality.setText(DoctorSpecialty);
+                }else{pspeciality.setText("Specialty");}
+                if(DoctorDegree != null) {
+                    pdegree.setText(DoctorDegree);
+                }else{pdegree.setText("Degree");}
+                if(DoctorPhone != null) {
+                    pphone.setText(DoctorPhone);
+                }else{pphone.setText("Phone Number");}
+                if(DoctorPrice != null) {
+                    pprice.setText(DoctorPrice);
+                }else{pprice.setText("Detection price");}
+                if(DoctorTime != null) {
+                    ptime.setText(DoctorTime+"min.");
+                }else{ptime.setText("Not yet");}
             }
 
             @Override
@@ -539,7 +603,9 @@ private void editDialogbook() {
                 String DoctorPhone = dataSnapshot1.child(country).child(type).child("users").child(DoctorID).child("cPhone").getValue(String.class);
                 String DoctorPrice = dataSnapshot1.child(country).child(type).child("users").child(DoctorID).child("cPrice").getValue(String.class);
                 String DoctorTime = dataSnapshot1.child(country).child(type).child("users").child(DoctorID).child("cTime").getValue(String.class);
-               if(DoctorName != null) {
+                String DoctorAbout = dataSnapshot1.child(country).child(type).child("users").child(DoctorID).child("cAbout").getValue(String.class);
+
+                if(DoctorName != null) {
                    pname.setText(DoctorName);
                }else{pname.setText("Name");}
                 if(DoctorCity != null) {
@@ -559,7 +625,11 @@ private void editDialogbook() {
                 }else{pprice.setText("Detection price");}
                 if(DoctorTime != null) {
                 ptime.setText(DoctorTime+"min.");
-                }else{ptime.setText("Detection price");}
+                }else{ptime.setText("Not yet");}
+                if(DoctorAbout != null) {
+                    peditbox.setText(DoctorAbout);
+                }
+
             }
 
             @Override
