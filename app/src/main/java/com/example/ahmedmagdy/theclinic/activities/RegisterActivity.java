@@ -21,18 +21,21 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmedmagdy.theclinic.R;
+import com.example.ahmedmagdy.theclinic.classes.DoctorFirebaseClass;
 import com.example.ahmedmagdy.theclinic.classes.RegisterClass;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -50,13 +53,15 @@ import java.util.Locale;
 public class RegisterActivity extends AppCompatActivity implements LocationListener{
     private TextView shelter;
     private TextView singIn, signUp;
-    private EditText editTextEmail, editTextPassword, editTextCPassword,editTextCity,editTextName, editTextcal;
+    private EditText editTextEmail, editTextPassword, editTextCPassword,editTextAddress,editTextName, editTextcal,specialtyEditText,editTextPhone;
     private ProgressBar progressBar;
     private Spinner spinnerCountry, spinnerType;
-    DatabaseReference databaseReg;
+    DatabaseReference databaseUserReg;
+    DatabaseReference databaseDoctor;
+    //DatabaseReference databaseDoctorReg;
     FirebaseAuth mAuth;
     LocationManager locationManager;
-
+   // String mBirthDayCalender,mSpecialty;
     Calendar mCurrentDate;
 //Bitmap mgeneratedateicon;
 //ImageGenerator imageGenerator;
@@ -67,18 +72,29 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();
-        databaseReg = FirebaseDatabase.getInstance().getReference("reg_data");
+        databaseUserReg = FirebaseDatabase.getInstance().getReference("user_data");
+        //databaseDoctorReg = FirebaseDatabase.getInstance().getReference("doctor_data");
+        databaseDoctor = FirebaseDatabase.getInstance().getReference("Doctordb");
+
+
+
+        editTextPhone = findViewById(R.id.edit_phone);
 
         editTextEmail = findViewById(R.id.edit_email);
         editTextPassword = findViewById(R.id.edit_password);
         editTextCPassword = findViewById(R.id.edit_c_password);
-        editTextCity = findViewById(R.id.edit_city);
+        editTextAddress = findViewById(R.id.edit_city);
         editTextName = findViewById(R.id.edit_name);
         signUp = findViewById(R.id.getstarted);
         singIn = (TextView) findViewById(R.id.login);
 
         editTextName= findViewById(R.id.edit_name);
         editTextcal= findViewById(R.id.calender);
+        specialtyEditText = (EditText) findViewById(R.id.specialty_reg);
+        final LinearLayout linearCalender=(LinearLayout)this.findViewById(R.id.linear_calender);
+        final LinearLayout linearSpecialty=(LinearLayout)this.findViewById(R.id.linear_specialty);
+
+
         ///////////////Calender//////////////////
 
         // Create an object of ImageGenerator class in your activity
@@ -150,7 +166,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         }
         getLocation();
         //--------------------------------------
-
+/**
 // spinner for countries
         ArrayAdapter<CharSequence> adapterc = ArrayAdapter.createFromResource(
                 RegisterActivity.this, R.array.countries_array, android.R.layout.simple_spinner_item);
@@ -166,7 +182,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-        });
+        });**/
 
         // spinner for type
         ArrayAdapter<CharSequence> adaptert = ArrayAdapter.createFromResource(
@@ -178,10 +194,37 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.colorText));
+             String mtype = spinnerType.getSelectedItem().toString().trim();
+                if (mtype.equalsIgnoreCase("User")) {
+                   // specialtyEditText.setVisibility(View.GONE);
+                    linearSpecialty.setVisibility(LinearLayout.GONE);
+                    linearCalender.setVisibility(LinearLayout.VISIBLE);
+
+
+
+
+                } else if (mtype.equalsIgnoreCase("Doctor")) {
+                   // editTextcal.setVisibility(View.GONE);
+                    linearCalender.setVisibility(LinearLayout.GONE);
+                    linearSpecialty.setVisibility(LinearLayout.VISIBLE);
+
+
+
+                } else {// (mtype .equalsIgnoreCase ("Hospital") )
+                   // editTextcal.setVisibility(View.GONE);
+                    linearCalender.setVisibility(LinearLayout.GONE);
+                    linearSpecialty.setVisibility(LinearLayout.VISIBLE);
+
+
+
+                }
+
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                linearSpecialty.setVisibility(LinearLayout.GONE);
+                linearCalender.setVisibility(LinearLayout.VISIBLE);
             }
         });
     }
@@ -191,12 +234,12 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         final String mEmail = editTextEmail.getText().toString().trim();
         String mPassword = editTextPassword.getText().toString().trim();
         String mCPassword = editTextCPassword.getText().toString().trim();
-
+        final String mPhone = editTextPhone.getText().toString().trim();
         final String mName = editTextName.getText().toString().trim();
-        final String mCity = editTextCity.getText().toString().trim();
+        final String mCity = editTextAddress.getText().toString().trim();
         final String mBirthDayCalender = editTextcal.getText().toString().trim();
-
-        final String mCountry = spinnerCountry.getSelectedItem().toString().trim();
+        final String mSpecialty = specialtyEditText.getText().toString().trim();
+        //final String mCountry = spinnerCountry.getSelectedItem().toString().trim();
         final String mtype = spinnerType.getSelectedItem().toString().trim();
 
 
@@ -205,6 +248,14 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
             editTextName.requestFocus();
             return;
         }
+        if (mtype.equalsIgnoreCase("Doctor")  ||  mtype.equalsIgnoreCase("Doctor")) {
+            if (mPhone.isEmpty()) {
+                editTextPhone.setError("Phone is required");
+                editTextPhone.requestFocus();
+                return;
+            }
+        }
+
 
         if (mEmail.isEmpty()) {
             editTextEmail.setError("Email is required");
@@ -242,17 +293,25 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
             return;
         }
         if (mCity.isEmpty()) {
-            editTextCity.setError("City is required");
-            editTextCity.requestFocus();
+            editTextAddress.setError("City is required");
+            editTextAddress.requestFocus();
             return;
         }
+        if (mtype.equalsIgnoreCase("User")) {
+            if (mBirthDayCalender.isEmpty()) {
+                editTextcal.setError("Birthdar is required");
+                editTextcal.requestFocus();
+                return;
+            }
+        }
 
-        if (mBirthDayCalender.isEmpty()) {
-            editTextcal.setError("Birthdar is required");
-            editTextcal.requestFocus();
-            return;}
-
-
+        if (mtype.equalsIgnoreCase("Doctor")  ||  mtype.equalsIgnoreCase("Doctor")) {
+            if (mSpecialty.isEmpty()) {
+                specialtyEditText.setError("Specialty is required");
+                specialtyEditText.requestFocus();
+                return;
+            }
+        }
         progressBar.setVisibility(View.VISIBLE);
         if (isNetworkConnected()) {
             mAuth.createUserWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -261,10 +320,17 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
                     progressBar.setVisibility(View.GONE);
                     if (task.isSuccessful()) {
                         Toast.makeText(RegisterActivity.this, "USER CREATED", Toast.LENGTH_SHORT).show();
+                        if (mtype.equalsIgnoreCase("User")) {
+                            RegisterClass regdatauser = new RegisterClass(mName, mPhone, mCity, mBirthDayCalender, mEmail, mtype);
+                            databaseUserReg.child(mAuth.getCurrentUser().getUid()).setValue(regdatauser);
 
-                         RegisterClass regdata = new RegisterClass(mName, mCountry, mCity, mBirthDayCalender,mEmail, mtype);
-                         databaseReg.child(mAuth.getCurrentUser().getUid()).setValue(regdata);
-
+                        }else {
+                            DatabaseReference reference = databaseDoctor.push();
+                            String id = reference.getKey();
+                            DoctorFirebaseClass doctorfirebaseclass = new DoctorFirebaseClass(id,mName, mPhone, mCity, mSpecialty, mEmail, mtype);
+                            databaseDoctor.child(id).setValue(doctorfirebaseclass);
+                           // databaseDoctorReg.child(mAuth.getCurrentUser().getUid()).setValue(regdatadoctor);
+                        }
                          Intent intend = new Intent(RegisterActivity.this, AllDoctorActivity.class);
                          intend.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                          finish();
@@ -316,13 +382,25 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            editTextCity.setText(addresses.get(0).getAddressLine(0)+", "+
-                    addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
-            Toast.makeText(RegisterActivity.this, addresses.get(0).getAddressLine(2), Toast.LENGTH_SHORT).show();
 
-            //this comment show complete addrees
-            //      editTextCity.setText(editTextCity.getText() + "\n"+addresses.get(0).getAddressLine(0)+", "+
-            //           addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+
+            Log.v("Image1",address);
+            Log.v("Image2",city);
+            Log.v("Image3",state);
+            Log.v("Image4",country);
+
+            editTextAddress.setText(address);
+
+            // editTextAddress.setText(addresses.get(0).getAddressLine(0)+", "+addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
+            //Toast.makeText(RegisterActivity.this, addresses.get(0).getAddressLine(2), Toast.LENGTH_SHORT).show();
+
+
         }catch(Exception e)
         {
 

@@ -71,29 +71,10 @@ public class AllDoctorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
                 Intent it = new Intent(AllDoctorActivity.this, AddDoctorActivity.class);
-                startActivity(it);
+               // startActivity(it);
             }
         });
 
-        listViewDoctor.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
-                // TODO Auto-generated method stub
-                DoctorFirebaseClass doctorclass = doctorList.get(position);
-                Log.v("long clicked","pos: " + position);
-                Intent intent =new Intent(getApplicationContext(), DoctorProfileActivity.class);
-                intent.putExtra("DoctorID", doctorclass.getcId());
-                intent.putExtra("DoctorName", doctorclass.getcName());
-                intent.putExtra("DoctorCity", doctorclass.getcCity());
-                intent.putExtra("DoctorSpecialty", doctorclass.getcSpecialty());
-                intent.putExtra("DoctorUri", doctorclass.getcUri());
-
-
-                startActivity(intent);
-
-                return true;
-            }
-        });
     }
     @Override
     protected void onStart() {
@@ -134,7 +115,7 @@ public class AllDoctorActivity extends AppCompatActivity {
     private void maketable() {
 
         if (isNetworkConnected()) {
-            if(country != null &&  type != null) {
+         //   if(country != null &&  type != null) {
 
 
               /**  if (type.equals("User")){
@@ -143,7 +124,7 @@ public class AllDoctorActivity extends AppCompatActivity {
                     addTrampButton.setVisibility(View.VISIBLE);
                 }**/
                 //databaseTramp.child(country).child("Individual").child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                databaseDoctor.child(country).child(type).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                databaseDoctor/**.child(country).child(type).child("users")**/.addListenerForSingleValueEvent(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -172,9 +153,9 @@ public class AllDoctorActivity extends AppCompatActivity {
                 });
 
             }
-        } else {
+      /**  } else {
             Toast.makeText(AllDoctorActivity.this, "please check the network connection", Toast.LENGTH_LONG).show();
-        }
+        }**/
     }
 
     private void setupSearchView() {

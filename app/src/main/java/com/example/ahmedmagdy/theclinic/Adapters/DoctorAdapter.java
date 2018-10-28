@@ -1,6 +1,7 @@
 package com.example.ahmedmagdy.theclinic.Adapters;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ahmedmagdy.theclinic.R;
+import com.example.ahmedmagdy.theclinic.activities.DoctorProfileActivity;
 import com.example.ahmedmagdy.theclinic.classes.DoctorFirebaseClass;
 
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
     }
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         final View listViewItem = inflater.inflate(R.layout.list_layout_doctors, null, true);
 
@@ -54,21 +56,49 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
         //asize = trampList.size();
 
 
+        adoctorphoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DoctorFirebaseClass doctorclass = doctorList.get(position);
+                Intent uIntent = new Intent(context, DoctorProfileActivity.class);
+                uIntent.putExtra("DoctorID", doctorclass.getcId());
+                /** uIntent.putExtra("DoctorName", doctorclass.getcName());
+                uIntent.putExtra("DoctorCity", doctorclass.getcCity());
+                uIntent.putExtra("DoctorSpecialty", doctorclass.getcSpecialty());
+                uIntent.putExtra("DoctorUri", doctorclass.getcUri());**/
+
+               // uIntent.putExtra("userid",  hometramp.getUserId());
+                uIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(uIntent);
+                // context.finish();
+            }
+        });
+
+
+
         adoctorname.setText(doctorclass.getcName());
         adoctorspecialty.setText(doctorclass.getcSpecialty());
         adoctorcity.setText(doctorclass.getcCity());
 
         a1=doctorclass.getcUri();
+        if(a1 != null) {
 
-       /** RequestOptions requestOptions = new RequestOptions();
-        requestOptions = requestOptions.transforms(new RoundedCorners(16));**/
-        //requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(16));
+            /** RequestOptions requestOptions = new RequestOptions();
+             requestOptions = requestOptions.transforms(new RoundedCorners(16));**/
+            //requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(16));
 
-        Glide.with(context)
-                .load(a1)
-                .apply(RequestOptions.circleCropTransform())
-               // .apply(requestOptions)
-                .into(adoctorphoto);
+            Glide.with(context)
+                    .load(a1)
+                    .apply(RequestOptions.circleCropTransform())
+                    // .apply(requestOptions)
+                    .into(adoctorphoto);
+        }else{
+            Glide.with(context)
+                    .load("https://firebasestorage.googleapis.com/v0/b/the-clinic-66fa1.appspot.com/o/doctor_logo_m.jpg?alt=media&token=d3108b95-4e16-4549-99b6-f0fa466e0d11")
+                    .apply(RequestOptions.circleCropTransform())
+                    // .apply(requestOptions)
+                    .into(adoctorphoto);
+        }
 
         return listViewItem;
     }

@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:text="Name"
+                android:textStyle="bold"
                 android:longClickable="true"
                 android:textIsSelectable="true"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"

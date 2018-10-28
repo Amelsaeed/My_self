@@ -288,7 +288,7 @@ public class AddDoctorActivity extends AppCompatActivity {
 
                 // StorageReference trampsRef = mStorageRef.child(imagePath.getLastPathSegment());
                 // StorageReference profileimageref = FirebaseStorage.getInstance().getReference("homelesspic/" + System.currentTimeMillis() + ".jpg");
-                StorageReference trampsRef = mStorageRef.child("trampspic/" + System.currentTimeMillis() + ".jpg");
+                StorageReference trampsRef = mStorageRef.child( System.currentTimeMillis() + ".jpg");
 
                 trampsRef.putBytes(byteImageData)
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -323,7 +323,7 @@ public class AddDoctorActivity extends AppCompatActivity {
         }
     }
     private void uploadData() {
-
+/**
         //we here replace code with one has the same id for both home and account activity
         DatabaseReference reference = databaseDoctor.push();
         String id = reference.getKey();
@@ -333,7 +333,7 @@ public class AddDoctorActivity extends AppCompatActivity {
         // Database for Account Activity
         databaseDoctor.child(country).child(type)
                 .child("users")
-                .child(id).setValue(doctorfirebaseclass);
+                .child(id).setValue(doctorfirebaseclass);**/
         // Database for Home Activity
        // databaseHome.child(country).child(id).setValue(homefirebaseclass);
       //  Log.v("Data"," 3-User id :"+ mUserId);

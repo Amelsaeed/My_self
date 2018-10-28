@@ -7,6 +7,9 @@ import java.io.Serializable;
  */
 
 public class DoctorFirebaseClass implements Serializable {
+    private  String cType;
+    private  String cEmail;
+
     private String cId;
     private String cName;
     private String cSpecialty;
@@ -41,19 +44,52 @@ public class DoctorFirebaseClass implements Serializable {
         this.cAbout = cAbout;
 
     }
-
-    public DoctorFirebaseClass(String cId, String cName, String cSpecialty, String cCity, String cUri) {
-        this.cName = cName;
-        this.cSpecialty = cSpecialty;
-        this.cCity = cCity;
-        this.cUri = cUri;
+    public DoctorFirebaseClass(String cId, String cName,String cPhone,  String cCity, String cSpecialty,String cEmail,String cType) {
         this.cId = cId;
-
-        this.cDegree = cDegree;
+        this.cName = cName;
         this.cPhone = cPhone;
+        this.cCity = cCity;
+        this.cSpecialty = cSpecialty;
+        this.cEmail = cEmail;
+        this.cType = cType;
+
+        this.cUri = cUri;
+        this.cDegree = cDegree;
         this.cPrice = cPrice;
         this.cTime = cTime;
         this.cAbout = cAbout;
+    }
+
+    public String getcType() {
+        return cType;
+    }
+
+    public void setcType(String cType) {
+        this.cType = cType;
+    }
+
+    public String getcEmail() {
+        return cEmail;
+    }
+
+    public void setcEmail(String cEmail) {
+        this.cEmail = cEmail;
+    }
+
+    public void setcName(String cName) {
+        this.cName = cName;
+    }
+
+    public void setcSpecialty(String cSpecialty) {
+        this.cSpecialty = cSpecialty;
+    }
+
+    public void setcCity(String cCity) {
+        this.cCity = cCity;
+    }
+
+    public void setcUri(String cUri) {
+        this.cUri = cUri;
     }
 
     public String getcName() {

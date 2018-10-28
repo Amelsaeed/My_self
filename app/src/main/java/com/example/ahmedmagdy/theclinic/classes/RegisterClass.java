@@ -6,20 +6,20 @@ package com.example.ahmedmagdy.theclinic.classes;
 
 public class RegisterClass {
     private String cname;
-    private String ccountry;
+    private String cphone;
     private String ccity;
-    private String cBirthDay;
+    private String cbirthday;
     private String cemail;
     private String ctype;
 
 //(mName, mCountry, mCity, mBirthDayCalender,mEmail, mtype);
     public RegisterClass() {}
 
-    public RegisterClass(String cname,String ccountry,String ccity,String cBirthDay,String cemail,  String ctype) {
+    public RegisterClass(String cname,String cphone,String ccity,String cbirthday,String cemail,  String ctype) {
         this.cname = cname;
-        this.ccountry = ccountry;
+        this.cphone = cphone;
         this.ccity = ccity;
-        this.cBirthDay = cBirthDay;
+        this.cbirthday = cbirthday;
         this.cemail = cemail;
         this.ctype = ctype;
     }
@@ -32,12 +32,12 @@ public class RegisterClass {
         this.cname = cname;
     }
 
-    public String getCcountry() {
-        return ccountry;
+    public String getCphone() {
+        return cphone;
     }
 
-    public void setCcountry(String ccountry) {
-        this.ccountry = ccountry;
+    public void setCphone(String cphone) {
+        this.cphone = cphone;
     }
 
     public String getCcity() {
@@ -48,12 +48,12 @@ public class RegisterClass {
         this.ccity = ccity;
     }
 
-    public String getcBirthDay() {
-        return cBirthDay;
+    public String getCbirthday() {
+        return cbirthday;
     }
 
-    public void setcBirthDay(String cBirthDay) {
-        this.cBirthDay = cBirthDay;
+    public void setCcbirthday(String cbirthday) {
+        this.cbirthday = cbirthday;
     }
 
     public String getCemail() {
