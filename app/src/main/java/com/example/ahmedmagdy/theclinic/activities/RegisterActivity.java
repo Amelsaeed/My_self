@@ -18,6 +18,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -46,16 +47,15 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class RegisterActivity extends AppCompatActivity  {
+public class RegisterActivity extends AppCompatActivity implements LocationListener{
     private TextView shelter;
-    private TextView singIn, signUp, getLocationBtn, locationtext;
+    private TextView singIn, signUp;
     private EditText editTextEmail, editTextPassword, editTextCPassword,editTextCity,editTextName, editTextcal;
     private ProgressBar progressBar;
     private Spinner spinnerCountry, spinnerType;
     DatabaseReference databaseReg;
     FirebaseAuth mAuth;
-   // private LocationManager locationManager;
-   // private LocationListener listener;
+    LocationManager locationManager;
 
     Calendar mCurrentDate;
 //Bitmap mgeneratedateicon;
@@ -78,7 +78,6 @@ public class RegisterActivity extends AppCompatActivity  {
         singIn = (TextView) findViewById(R.id.login);
 
         editTextName= findViewById(R.id.edit_name);
-        editTextCity= findViewById(R.id.edit_city);
         editTextcal= findViewById(R.id.calender);
         ///////////////Calender//////////////////
 
@@ -142,6 +141,15 @@ public class RegisterActivity extends AppCompatActivity  {
                 registerUser();
             }
         });
+        //--------Gps---------------------
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+
+        }
+        getLocation();
+        //--------------------------------------
 
 // spinner for countries
         ArrayAdapter<CharSequence> adapterc = ArrayAdapter.createFromResource(
@@ -288,8 +296,53 @@ public class RegisterActivity extends AppCompatActivity  {
             return false;
         }
     }
+//-----------------------------add Gps----------------------------------
+    void getLocation() {
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, this);
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        }
+        catch(SecurityException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Override
+    public void onLocationChanged(Location location) {
 
+        //  City.setText("Latitude: " + location.getLatitude() + "\n Longitude: " + location.getLongitude());
+
+        try {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            editTextCity.setText(addresses.get(0).getAddressLine(0)+", "+
+                    addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
+            Toast.makeText(RegisterActivity.this, addresses.get(0).getAddressLine(2), Toast.LENGTH_SHORT).show();
+
+            //this comment show complete addrees
+            //      editTextCity.setText(editTextCity.getText() + "\n"+addresses.get(0).getAddressLine(0)+", "+
+            //           addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
+        }catch(Exception e)
+        {
+
+        }
+
+    }
+    @Override
+    public void onProviderDisabled(String provider) {
+        Toast.makeText(RegisterActivity.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
 
 }
 
