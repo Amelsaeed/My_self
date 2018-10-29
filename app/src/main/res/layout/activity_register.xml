@@ -25,7 +25,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/logo"
-            android:layout_marginTop="17dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="Create Account"
             android:textColor="@color/colorPrimary"
@@ -35,9 +36,9 @@
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
             android:layout_below="@id/title_reister"
-            android:layout_alignParentBottom="true">
+            android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
