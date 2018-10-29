@@ -39,6 +39,7 @@ import com.example.ahmedmagdy.theclinic.classes.BookingTimesClass;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,7 +59,7 @@ import java.util.NoSuchElementException;
 
 public class DoctorProfileActivity extends AppCompatActivity {
     ImageView ppicuri;
-    TextView pname,pcity,pspeciality,pdegree,pphone,pprice,ptime,pedit1,pedit2,pedit3,pedit4,pedit5,pedit6,pedit7,paddbook;
+    TextView pname,pcity,pspeciality,pdegree,pphone,pprice,ptime,paddbook;
     EditText peditbox;
     private ProgressBar progressBarBooking, progressBarImage;
 
@@ -74,8 +75,8 @@ public class DoctorProfileActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private DatabaseReference databaseDoctor;
     private DatabaseReference databaseUserReg;
-    String type,country;
-    String DoctorID;
+
+    String DoctorID, uid;
     ListView listViewBooking;
     private List<BookingClass> bookingList;
 
@@ -109,19 +110,27 @@ public class DoctorProfileActivity extends AppCompatActivity {
         ppicuri = (ImageView) findViewById(R.id.edit_photo);
         paddbook = (TextView) findViewById(R.id.add);
 
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            if(user.getUid() != null){
+                String uid = user.getUid();
+            }
 
-        Intent intent = getIntent();
+        }
+            Intent intent = getIntent();
         DoctorID = intent.getStringExtra("DoctorID");
-
+        if(!DoctorID.equals(uid)){paddbook.setVisibility(View.GONE);}
         getallData();
 
 
         pname.setOnLongClickListener(new View.OnLongClickListener() {
                     public boolean onLongClick(View view) {
+                        if(DoctorID.equals(uid)){
                 String whatdata = "Name";
-                editDialog(whatdata);
+                editDialog(whatdata);}
                 return true;
             }
+
         });
         pname.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,8 +141,9 @@ public class DoctorProfileActivity extends AppCompatActivity {
         });
         pcity.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
+                if(DoctorID.equals(uid)){
                 String whatdata = "State/ City";
-                editDialog(whatdata);
+                editDialog(whatdata);}
                 return true;
             }
         });
@@ -146,8 +156,9 @@ public class DoctorProfileActivity extends AppCompatActivity {
         });
         pspeciality.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
+                if(DoctorID.equals(uid)){
                 String whatdata = "Specialty";
-                editDialog(whatdata);
+                editDialog(whatdata);}
                 return true;
             }
         });
@@ -160,8 +171,9 @@ public class DoctorProfileActivity extends AppCompatActivity {
         });
         pdegree.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
+                if(DoctorID.equals(uid)){
                 String whatdata = "Degree";
-                editDialog(whatdata);
+                editDialog(whatdata);}
                 return true;
             }
         });
@@ -174,8 +186,9 @@ public class DoctorProfileActivity extends AppCompatActivity {
         });
         pphone.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
+                if(DoctorID.equals(uid)){
                 String whatdata = "Phone Number";
-                editDialog(whatdata);
+                editDialog(whatdata);}
                 return true;
             }
         });
@@ -188,8 +201,9 @@ public class DoctorProfileActivity extends AppCompatActivity {
         });
         pprice.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
+                if(DoctorID.equals(uid)){
                 String whatdata = "Detection price";
-                editDialog(whatdata);
+                editDialog(whatdata);}
                 return true;
             }
         });
@@ -202,8 +216,9 @@ public class DoctorProfileActivity extends AppCompatActivity {
         });
         ptime.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
+                if(DoctorID.equals(uid)){
                 String whatdata = "Average detection time in min";
-                editDialog(whatdata);
+                editDialog(whatdata);}
                 return true;
             }
         });
@@ -227,9 +242,37 @@ public class DoctorProfileActivity extends AppCompatActivity {
         peditbox.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-            final String about1 = peditbox.getText().toString().trim();
-                databaseDoctor.child(DoctorID).child("cAbout").setValue(about1);
+                if(DoctorID.equals(uid)) {
 
+                    final String about1 = peditbox.getText().toString().trim();
+                    databaseDoctor.child(DoctorID).child("cAbout").setValue(about1);
+                }/**else {
+                    //////////////////////////////
+
+                        Toast.makeText(DoctorProfileActivity.this, "You can't change it", Toast.LENGTH_LONG).show();
+
+                        final ValueEventListener postListener1 = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot1) {
+
+
+                                String DoctorAbout = dataSnapshot1.child(DoctorID).child("cAbout").getValue(String.class);
+
+                                if (DoctorAbout != null) {peditbox.setText(DoctorAbout);}
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                // Getting Post failed, log a message
+                            }
+                        };
+                        databaseDoctor.addValueEventListener(postListener1);
+
+
+
+                    ////////////////////////////////////
+                }**/
             }
 
             @Override
@@ -240,6 +283,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
+
 
             }
         });
@@ -303,7 +347,8 @@ public class DoctorProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Code here executes on main thread after user presses image
-                displayImportImageDialog();
+                if(DoctorID.equals(uid)) {
+                displayImportImageDialog();}
             }
         });
 

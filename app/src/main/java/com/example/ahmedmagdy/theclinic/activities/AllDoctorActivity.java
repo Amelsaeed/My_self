@@ -39,8 +39,8 @@ public class AllDoctorActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private StorageReference mStorageRef;
     private DatabaseReference databaseDoctor;
-    private DatabaseReference databaseReg;
-    String type,country;
+
+
     SearchView searchView;
    // Button addTrampButton;
     private ProgressBar progressBar;
@@ -59,7 +59,6 @@ public class AllDoctorActivity extends AppCompatActivity {
 
         databaseDoctor = FirebaseDatabase.getInstance().getReference("Doctordb");
         mStorageRef = FirebaseStorage.getInstance().getReference("Photos");
-        databaseReg = FirebaseDatabase.getInstance().getReference("reg_data");
         listViewDoctor= (ListView)findViewById(R.id.list_view_doctor);
         searchView = (SearchView) findViewById(R.id.search);
         doctorList=new ArrayList<>();
@@ -80,7 +79,7 @@ public class AllDoctorActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         progressBar.setVisibility(View.VISIBLE);
-        getRegData();
+        maketable();
     }
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -91,27 +90,7 @@ public class AllDoctorActivity extends AppCompatActivity {
             return false;
         }
     }
-    private void getRegData() {
 
-
-        ////import data of country and tope
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                type = dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("ctype").getValue(String.class);
-                country = dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("ccountry").getValue(String.class);
-                maketable();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-            }
-        };
-        databaseReg .addValueEventListener(postListener);
-
-    }
     private void maketable() {
 
         if (isNetworkConnected()) {
