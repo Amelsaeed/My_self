@@ -46,6 +46,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kd.dynamic.calendar.generator.ImageGenerator;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -61,8 +62,11 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
     //DatabaseReference databaseDoctorReg;
     FirebaseAuth mAuth;
     LocationManager locationManager;
-   // String mBirthDayCalender,mSpecialty;
+   String caltext;
     Calendar mCurrentDate;
+    int year,month,day;
+    String mDate;
+
 //Bitmap mgeneratedateicon;
 //ImageGenerator imageGenerator;
 
@@ -97,6 +101,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
 
         ///////////////Calender//////////////////
 
+
         // Create an object of ImageGenerator class in your activity
 // and pass the context as the parameter
         ImageGenerator mImageGenerator = new ImageGenerator(this);
@@ -120,13 +125,18 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
             @Override
             public void onClick(View v) {
                 mCurrentDate = Calendar.getInstance();
-                int year=mCurrentDate.get(Calendar.YEAR);
-                int month=mCurrentDate.get(Calendar.MONTH);
-                int day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
+                year=mCurrentDate.get(Calendar.YEAR);
+                month=mCurrentDate.get(Calendar.MONTH);
+                day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
+               //final String abc= getAge(year, month, day);
+
                 DatePickerDialog mPickerDialog =  new DatePickerDialog(RegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int Year, int Month, int Day) {
+                       caltext=Year+"_"+ ((Month/10)+1)+"_"+Day;
                         editTextcal.setText(Year+"_"+ ((Month/10)+1)+"_"+Day);
+                      //  Toast.makeText(RegisterActivity.this,"Your age= "+abc, Toast.LENGTH_LONG).show();
+
                         mCurrentDate.set(Year, ((Month/10)+1),Day);
                         //   mImageGenerator.generateDateImage(mCurrentDate, R.drawable.empty_calendar);
                     }
@@ -241,6 +251,8 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         final String mSpecialty = specialtyEditText.getText().toString().trim();
         //final String mCountry = spinnerCountry.getSelectedItem().toString().trim();
         final String mtype = spinnerType.getSelectedItem().toString().trim();
+        //final String mBirthDayCalender = editTextcal.getText().toString().trim();caltext
+        Toast.makeText(RegisterActivity.this, mBirthDayCalender, Toast.LENGTH_SHORT).show();
 
 
         if (mName.isEmpty()) {
@@ -312,6 +324,8 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
                 return;
             }
         }
+
+
         progressBar.setVisibility(View.VISIBLE);
         if (isNetworkConnected()) {
             mAuth.createUserWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -321,12 +335,14 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
                     if (task.isSuccessful()) {
                         Toast.makeText(RegisterActivity.this, "USER CREATED", Toast.LENGTH_SHORT).show();
                         if (mtype.equalsIgnoreCase("User")) {
-                            RegisterClass regdatauser = new RegisterClass(mName, mPhone, mCity, mBirthDayCalender, mEmail, mtype);
+                            String id = mAuth.getCurrentUser().getUid();
+                            RegisterClass regdatauser = new RegisterClass(id,mName, mPhone, mCity,mBirthDayCalender , mEmail, mtype);
                             databaseUserReg.child(mAuth.getCurrentUser().getUid()).setValue(regdatauser);
 
                         }else {
-                            DatabaseReference reference = databaseDoctor.push();
-                            String id = reference.getKey();
+                           // DatabaseReference reference = databaseDoctor.push();
+                           // String id = reference.getKey();
+                            String id = mAuth.getCurrentUser().getUid();
                             DoctorFirebaseClass doctorfirebaseclass = new DoctorFirebaseClass(id,mName, mPhone, mCity, mSpecialty, mEmail, mtype);
                             databaseDoctor.child(id).setValue(doctorfirebaseclass);
                            // databaseDoctorReg.child(mAuth.getCurrentUser().getUid()).setValue(regdatadoctor);
@@ -421,6 +437,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
     public void onProviderEnabled(String provider) {
 
     }
+
 
 }
 

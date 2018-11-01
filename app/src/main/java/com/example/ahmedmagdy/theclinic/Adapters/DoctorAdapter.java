@@ -62,6 +62,8 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
                 DoctorFirebaseClass doctorclass = doctorList.get(position);
                 Intent uIntent = new Intent(context, DoctorProfileActivity.class);
                 uIntent.putExtra("DoctorID", doctorclass.getcId());
+
+                //uIntent.putExtra("DoctorID", doctorclass.getcId());
                 /** uIntent.putExtra("DoctorName", doctorclass.getcName());
                 uIntent.putExtra("DoctorCity", doctorclass.getcCity());
                 uIntent.putExtra("DoctorSpecialty", doctorclass.getcSpecialty());
@@ -94,7 +96,7 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
                     .into(adoctorphoto);
         }else{
             Glide.with(context)
-                    .load("https://firebasestorage.googleapis.com/v0/b/the-clinic-66fa1.appspot.com/o/doctor_logo_m.jpg?alt=media&token=d3108b95-4e16-4549-99b6-f0fa466e0d11")
+                    .load("https://firebasestorage.googleapis.com/v0/b/the-clinic-66fa1.appspot.com/o/doctor_logo_m.jpg?alt=media&token=2cbb0305-145f-4568-99a2-b76d8011f287")
                     .apply(RequestOptions.circleCropTransform())
                     // .apply(requestOptions)
                     .into(adoctorphoto);

@@ -5,6 +5,7 @@ package com.example.ahmedmagdy.theclinic.classes;
  */
 
 public class RegisterClass {
+    private String cId;
     private String cname;
     private String cphone;
     private String ccity;
@@ -12,16 +13,26 @@ public class RegisterClass {
     private String cemail;
     private String ctype;
 
+
 //(mName, mCountry, mCity, mBirthDayCalender,mEmail, mtype);
     public RegisterClass() {}
 
-    public RegisterClass(String cname,String cphone,String ccity,String cbirthday,String cemail,  String ctype) {
+    public RegisterClass(String cId, String cname, String cphone, String ccity, String cbirthday, String cemail, String ctype) {
+        this.cId = cId;
         this.cname = cname;
         this.cphone = cphone;
         this.ccity = ccity;
         this.cbirthday = cbirthday;
         this.cemail = cemail;
         this.ctype = ctype;
+    }
+
+    public String getcId() {
+        return cId;
+    }
+
+    public void setcId(String cId) {
+        this.cId = cId;
     }
 
     public String getCname() {
@@ -52,7 +63,7 @@ public class RegisterClass {
         return cbirthday;
     }
 
-    public void setCcbirthday(String cbirthday) {
+    public void setCbirthday(String cbirthday) {
         this.cbirthday = cbirthday;
     }
 

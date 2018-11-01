@@ -52,6 +52,7 @@ import com.kd.dynamic.calendar.generator.ImageGenerator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -75,8 +76,9 @@ public class DoctorProfileActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private DatabaseReference databaseDoctor;
     private DatabaseReference databaseUserReg;
+    private DatabaseReference databasetimeBooking;
 
-    String DoctorID, uid;
+    String DoctorID, uid,mDate,picuri;
     ListView listViewBooking;
     private List<BookingClass> bookingList;
 
@@ -89,6 +91,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
 
         databaseDoctor = FirebaseDatabase.getInstance().getReference("Doctordb");
         databaseUserReg = FirebaseDatabase.getInstance().getReference("user_data");
+        databasetimeBooking = FirebaseDatabase.getInstance().getReference("bookingtimes");
 
         mStorageRef = FirebaseStorage.getInstance().getReference("Photos");
 
@@ -110,15 +113,19 @@ public class DoctorProfileActivity extends AppCompatActivity {
         ppicuri = (ImageView) findViewById(R.id.edit_photo);
         paddbook = (TextView) findViewById(R.id.add);
 
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser user = mAuth.getCurrentUser();//mAuth.getCurrentUser().getUid()
         if (user != null) {
             if(user.getUid() != null){
-                String uid = user.getUid();
+                 uid = user.getUid();
+               // Toast.makeText(DoctorProfileActivity.this, uid, Toast.LENGTH_LONG).show();
+
             }
 
         }
             Intent intent = getIntent();
         DoctorID = intent.getStringExtra("DoctorID");
+       // Toast.makeText(DoctorProfileActivity.this, DoctorID, Toast.LENGTH_LONG).show();
+
         if(!DoctorID.equals(uid)){paddbook.setVisibility(View.GONE);}
         getallData();
 
@@ -287,8 +294,62 @@ public class DoctorProfileActivity extends AppCompatActivity {
 
             }
         });
-
         listViewBooking.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
+                // TODO Auto-generated method stub
+                BookingClass bookingclass = bookingList.get(position);
+                final String timeID= bookingclass.getCbid();
+               // Toast.makeText(DoctorProfileActivity.this, timeID, Toast.LENGTH_LONG).show();
+//////////////////////////////////////////////////
+                final Dialog dialog = new Dialog(DoctorProfileActivity.this);
+                dialog.setContentView(R.layout.chose_account_dialog);
+                dialog.setTitle("Chose an account");
+                dialog.setCanceledOnTouchOutside(false);
+
+                TextView youraccount = (TextView) dialog.findViewById(R.id.your_account_tv);
+                TextView anotheraccount = (TextView) dialog.findViewById(R.id.another_acount_tv);
+                TextView cancel = (TextView) dialog.findViewById(R.id.dismiss_dialog);
+
+                youraccount.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        openClenderAction(timeID);
+                    }
+                });
+
+                anotheraccount.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        mAuth.getInstance().signOut();
+                        Intent it = new Intent(DoctorProfileActivity.this, LoginActivity.class);
+                        it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        finish();
+                        startActivity(it);
+
+                    }
+                });
+
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.setCanceledOnTouchOutside(false);
+
+                dialog.show();
+                //////////////////////////////////
+
+                return true;
+            }
+            });
+
+      /**  listViewBooking.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
                 // TODO Auto-generated method stub
@@ -296,7 +357,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
                final String timeID= bookingclass.getCbid();
                 Toast.makeText(DoctorProfileActivity.this, timeID, Toast.LENGTH_LONG).show();
 
-                ///***********************calender***********************************************//
+                ///***********************calender**********************************************
                 ImageGenerator mImageGenerator = new ImageGenerator(DoctorProfileActivity.this);
 
 // Set the icon size to the generated in dip.
@@ -313,10 +374,10 @@ public class DoctorProfileActivity extends AppCompatActivity {
 // Set the color of the font to be generated
                 mImageGenerator.setDateColor(Color.parseColor("#3c6eaf"));
                 mImageGenerator.setMonthColor(Color.WHITE);
-/**
-                abookingphoto.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {**/
+
+               // abookingphoto.setOnClickListener(new View.OnClickListener() {
+                  //  @Override
+                 //   public void onClick(View v) {
                         final Calendar mCurrentDate = Calendar.getInstance();
                         int year=mCurrentDate.get(Calendar.YEAR);
                         int month=mCurrentDate.get(Calendar.MONTH);
@@ -336,12 +397,12 @@ public class DoctorProfileActivity extends AppCompatActivity {
                         mPickerDialog.show();
                   //  }
               //  });
-                ///***********************calender***********************************************//
+                ///***********************calender*********************************************
 
 
                 return true;
             }
-        });
+        });**/
 
         ppicuri.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -352,6 +413,46 @@ public class DoctorProfileActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void openClenderAction(final String timeID) {
+        ImageGenerator mImageGenerator = new ImageGenerator(DoctorProfileActivity.this);
+
+// Set the icon size to the generated in dip.
+        mImageGenerator.setIconSize(50, 50);
+
+// Set the size of the date and month font in dip.
+        mImageGenerator.setDateSize(30);
+        mImageGenerator.setMonthSize(10);
+
+// Set the position of the date and month in dip.
+        mImageGenerator.setDatePosition(42);
+        mImageGenerator.setMonthPosition(14);
+
+// Set the color of the font to be generated
+        mImageGenerator.setDateColor(Color.parseColor("#3c6eaf"));
+        mImageGenerator.setMonthColor(Color.WHITE);
+
+        // abookingphoto.setOnClickListener(new View.OnClickListener() {
+        //  @Override
+        //   public void onClick(View v) {
+        final Calendar mCurrentDate = Calendar.getInstance();
+        int year=mCurrentDate.get(Calendar.YEAR);
+        int month=mCurrentDate.get(Calendar.MONTH);
+        int day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog mPickerDialog =  new DatePickerDialog(DoctorProfileActivity.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int Year, int Month, int Day) {
+                String datedmy= Year+"_"+ (Month+1)+"_"+Day;
+                Toast.makeText(DoctorProfileActivity.this, datedmy, Toast.LENGTH_LONG).show();
+                // Toast.makeText(context, id+doctorID, Toast.LENGTH_LONG).show();
+                makepatientbooking(timeID, datedmy);
+                //editTextcal.setText(Year+"_"+ ((Month/10)+1)+"_"+Day);
+                mCurrentDate.set(Year, ((Month+1)),Day);
+                //   mImageGenerator.generateDateImage(mCurrentDate, R.drawable.empty_calendar);
+            }
+        }, year, month, day);
+        mPickerDialog.show();
     }
 
     private void displayImportImageDialog() {
@@ -504,15 +605,28 @@ public class DoctorProfileActivity extends AppCompatActivity {
 
                 String patientname = dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("cname").getValue(String.class);
                 String patientage = dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("cbirthday").getValue(String.class);
+
+                String patientpic = dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("cpatentphoto").getValue(String.class);
+                if(patientpic != null){
+                    picuri=patientpic;
+                }else{picuri="https://firebasestorage.googleapis.com/v0/b/the-clinic-66fa1.appspot.com/o/user_logo_m.jpg?alt=media&token=ff53fa61-0252-43a4-8fa3-0eb3a3976ee5";}
+               // Toast.makeText(DoctorProfileActivity.this, picuri, Toast.LENGTH_LONG).show();
+
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                mDate = sdf.format(calendar.getTime());
+
                 ////to do/////////-------------------------------------------------------------
-                final DatabaseReference databasetimeBooking = FirebaseDatabase.getInstance().getReference("bookingtimes").child(DoctorID).child(timeID).child(datedmy);
-                DatabaseReference reference = databasetimeBooking.push();
-                String timesid = reference.getKey();
+                DatabaseReference reference1 = databasetimeBooking.push();
+                //final DatabaseReference databasetimeBooking = FirebaseDatabase.getInstance().getReference("bookingtimes").child(DoctorID).child(timeID).child(datedmy);
+               // DatabaseReference reference = databasetimeBooking.push();
+                String timesid = reference1.getKey();
                 //Log.v("Data"," 2-User id :"+ mUserId);
-                BookingTimesClass bookingtimesclass = new BookingTimesClass(timesid, patientname, patientage);
+                String userid = mAuth.getCurrentUser().getUid();
+                BookingTimesClass bookingtimesclass = new BookingTimesClass(userid, patientname, patientage, mDate, picuri);
 
                 // Database for Account Activity
-                databaseDoctor.child(DoctorID).child(timeID)
+                databasetimeBooking.child(DoctorID).child(timeID)
                         .child(datedmy)
                         .child(timesid).setValue(bookingtimesclass);
                 //////////////////////*******-----------------
