@@ -100,41 +100,40 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
 
 
         ///////////////Calender//////////////////
-
-
-        // Create an object of ImageGenerator class in your activity
-// and pass the context as the parameter
-        ImageGenerator mImageGenerator = new ImageGenerator(this);
-
-// Set the icon size to the generated in dip.
-        mImageGenerator.setIconSize(50, 50);
-
-// Set the size of the date and month font in dip.
-        mImageGenerator.setDateSize(30);
-        mImageGenerator.setMonthSize(10);
-
-// Set the position of the date and month in dip.
-        mImageGenerator.setDatePosition(42);
-        mImageGenerator.setMonthPosition(14);
-
-// Set the color of the font to be generated
-        mImageGenerator.setDateColor(Color.parseColor("#3c6eaf"));
-        mImageGenerator.setMonthColor(Color.WHITE);
-
         editTextcal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentDate = Calendar.getInstance();
-                year=mCurrentDate.get(Calendar.YEAR);
-                month=mCurrentDate.get(Calendar.MONTH);
-                day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
-               //final String abc= getAge(year, month, day);
+
+                ImageGenerator mImageGenerator = new ImageGenerator(RegisterActivity.this);
+
+// Set the icon size to the generated in dip.
+                mImageGenerator.setIconSize(50, 50);
+
+// Set the size of the date and month font in dip.
+                mImageGenerator.setDateSize(30);
+                mImageGenerator.setMonthSize(10);
+
+// Set the position of the date and month in dip.
+                mImageGenerator.setDatePosition(42);
+                mImageGenerator.setMonthPosition(14);
+
+// Set the color of the font to be generated
+                mImageGenerator.setDateColor(Color.parseColor("#3c6eaf"));
+                mImageGenerator.setMonthColor(Color.WHITE);
+
+                // abookingphoto.setOnClickListener(new View.OnClickListener() {
+                //  @Override
+                //   public void onClick(View v) {
+                final Calendar mCurrentDate = Calendar.getInstance();
+                int year=mCurrentDate.get(Calendar.YEAR);
+                int month=mCurrentDate.get(Calendar.MONTH);
+                int day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog mPickerDialog =  new DatePickerDialog(RegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int Year, int Month, int Day) {
-                       caltext=Year+"_"+ ((Month/10)+1)+"_"+Day;
-                        editTextcal.setText(Year+"_"+ ((Month/10)+1)+"_"+Day);
+                        String datedmy= Year+"_"+ (Month+1)+"_"+Day;
+                        editTextcal.setText(datedmy);
                       //  Toast.makeText(RegisterActivity.this,"Your age= "+abc, Toast.LENGTH_LONG).show();
 
                         mCurrentDate.set(Year, ((Month/10)+1),Day);

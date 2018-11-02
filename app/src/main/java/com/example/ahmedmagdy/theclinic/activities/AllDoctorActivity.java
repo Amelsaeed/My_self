@@ -69,8 +69,8 @@ public class AllDoctorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
-                Intent it = new Intent(AllDoctorActivity.this, AddDoctorActivity.class);
-               // startActivity(it);
+                Intent it = new Intent(AllDoctorActivity.this, UserProfileActivity.class);
+                startActivity(it);
             }
         });
 

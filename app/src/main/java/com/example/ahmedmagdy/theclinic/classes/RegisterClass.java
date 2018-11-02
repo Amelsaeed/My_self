@@ -12,6 +12,7 @@ public class RegisterClass {
     private String cbirthday;
     private String cemail;
     private String ctype;
+    private String cUri;
 
 
 //(mName, mCountry, mCity, mBirthDayCalender,mEmail, mtype);
@@ -25,6 +26,7 @@ public class RegisterClass {
         this.cbirthday = cbirthday;
         this.cemail = cemail;
         this.ctype = ctype;
+        this.cUri = cUri;
     }
 
     public String getcId() {
@@ -81,5 +83,15 @@ public class RegisterClass {
 
     public void setCtype(String ctype) {
         this.ctype = ctype;
+    }
+
+
+
+    public String getCUri() {
+        return cUri;
+    }
+
+    public void setCUri(String cUri) {
+        this.cUri = cUri;
     }
 }
