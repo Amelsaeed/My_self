@@ -4,14 +4,22 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -56,12 +64,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 
-public class DoctorProfileActivity extends AppCompatActivity {
+public class DoctorProfileActivity extends AppCompatActivity implements LocationListener {
     ImageView ppicuri;
     TextView pname,pcity,pspeciality,pdegree,pphone,pprice,ptime,paddbook;
-    EditText peditbox;
+    EditText peditbox ;
+    EditText dialogAddress;
     private ProgressBar progressBarBooking, progressBarImage;
 
     private Uri imagePath;
@@ -81,7 +91,7 @@ public class DoctorProfileActivity extends AppCompatActivity {
     String DoctorID, uid,mDate,picuri;
     ListView listViewBooking;
     private List<BookingClass> bookingList;
-
+    LocationManager locationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -245,7 +255,15 @@ public class DoctorProfileActivity extends AppCompatActivity {
         });
 
         ////////////////////////////////
+        //--------Gps---------------------
 
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+
+        }
+
+        //--------------------------------------
         peditbox.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -752,8 +770,8 @@ private void editDialogbook() {
     dialog.setContentView(R.layout.booking_data_dialig);
     dialog.setTitle("Edit your data");
     dialog.setCanceledOnTouchOutside(false);
-
-    final EditText dialogAddress = (EditText) dialog.findViewById(R.id.dialog_address);
+    getLocation();
+     dialogAddress = (EditText) dialog.findViewById(R.id.dialog_address);
     final EditText dialogTime = (EditText) dialog.findViewById(R.id.dialog_time);
 
     TextView cancel = (TextView) dialog.findViewById(R.id.cancel_tv_e);
@@ -963,5 +981,65 @@ private void editDialogbook() {
         float density = getApplicationContext().getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
     }
+    //-----------------------------add Gps----------------------------------
+    void getLocation() {
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, this);
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        }
+        catch(SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        //  City.setText("Latitude: " + location.getLatitude() + "\n Longitude: " + location.getLongitude());
+
+        try {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+
+            Log.v("Image1",address);
+            Log.v("Image2",city);
+            Log.v("Image3",state);
+            Log.v("Image4",country);
+
+            dialogAddress.setText(address);
+
+            // editTextAddress.setText(addresses.get(0).getAddressLine(0)+", "+addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
+            //Toast.makeText(RegisterActivity.this, addresses.get(0).getAddressLine(2), Toast.LENGTH_SHORT).show();
+
+
+        }catch(Exception e)
+        {
+
+        }
+
+    }
+    @Override
+    public void onProviderDisabled(String provider) {
+        Toast.makeText(DoctorProfileActivity.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
 
 }
