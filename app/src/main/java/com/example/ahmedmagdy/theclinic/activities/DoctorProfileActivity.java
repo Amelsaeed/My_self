@@ -77,7 +77,7 @@ public class DoctorProfileActivity extends AppCompatActivity implements Location
     private Uri imagePath;
     private final int GALLERY_REQUEST_CODE = 1;
     private final int CAMERA_REQUEST_CODE = 2;
-
+String address;
     String mTrampPhotoUrl = "";
     int reloadCount = 0;
     byte[] byteImageData;
@@ -771,7 +771,14 @@ private void editDialogbook() {
     dialog.setTitle("Edit your data");
     dialog.setCanceledOnTouchOutside(false);
     getLocation();
-     dialogAddress = (EditText) dialog.findViewById(R.id.dialog_address);
+    Toast.makeText(this, address, Toast.LENGTH_LONG).show();
+
+    dialogAddress = (EditText) dialog.findViewById(R.id.dialog_address);
+    dialogAddress.setEnabled(true);
+    dialogAddress.setText(address);
+    dialogAddress.setEnabled(false);
+
+
     final EditText dialogTime = (EditText) dialog.findViewById(R.id.dialog_time);
 
     TextView cancel = (TextView) dialog.findViewById(R.id.cancel_tv_e);
@@ -982,7 +989,7 @@ private void editDialogbook() {
         return Math.round((float) dp * density);
     }
     //-----------------------------add Gps----------------------------------
-    void getLocation() {
+    public void getLocation() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, this);
@@ -1002,7 +1009,7 @@ private void editDialogbook() {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
             String city = addresses.get(0).getLocality();
             String state = addresses.get(0).getAdminArea();
             String country = addresses.get(0).getCountryName();
@@ -1014,7 +1021,6 @@ private void editDialogbook() {
             Log.v("Image3",state);
             Log.v("Image4",country);
 
-            dialogAddress.setText(address);
 
             // editTextAddress.setText(addresses.get(0).getAddressLine(0)+", "+addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
             //Toast.makeText(RegisterActivity.this, addresses.get(0).getAddressLine(2), Toast.LENGTH_SHORT).show();

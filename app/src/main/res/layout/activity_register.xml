@@ -243,6 +243,7 @@
                     android:textSize="13dp"
                     android:letterSpacing="0.1"
                     android:layout_weight="1"
+
                     />
 
             </LinearLayout>
@@ -279,6 +280,7 @@
                 android:layout_marginTop="10dp">
 
                 <ImageView
+                    android:id="@+id/calender_logo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_cal"
@@ -301,6 +303,8 @@
                     android:textSize="13dp"
                     android:letterSpacing="0.1"
                     android:layout_weight="1"
+                    android:enabled="false"
+
                     />
 
             </LinearLayout>

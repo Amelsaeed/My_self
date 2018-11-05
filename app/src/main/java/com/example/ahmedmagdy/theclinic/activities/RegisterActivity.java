@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -52,7 +53,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class RegisterActivity extends AppCompatActivity implements LocationListener{
-    private TextView shelter;
+    private ImageView callogo;
+
     private TextView singIn, signUp;
     private EditText editTextEmail, editTextPassword, editTextCPassword,editTextAddress,editTextName, editTextcal,specialtyEditText,editTextPhone;
     private ProgressBar progressBar;
@@ -62,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
     //DatabaseReference databaseDoctorReg;
     FirebaseAuth mAuth;
     LocationManager locationManager;
-   String caltext;
+    String caltext;
     Calendar mCurrentDate;
     int year,month,day;
     String mDate;
@@ -83,6 +85,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
 
 
         editTextPhone = findViewById(R.id.edit_phone);
+        callogo = findViewById(R.id.calender_logo);
 
         editTextEmail = findViewById(R.id.edit_email);
         editTextPassword = findViewById(R.id.edit_password);
@@ -100,43 +103,44 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
 
 
         ///////////////Calender//////////////////
-        editTextcal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                ImageGenerator mImageGenerator = new ImageGenerator(RegisterActivity.this);
+
+        // Create an object of ImageGenerator class in your activity
+// and pass the context as the parameter
+        ImageGenerator mImageGenerator = new ImageGenerator(this);
 
 // Set the icon size to the generated in dip.
-                mImageGenerator.setIconSize(50, 50);
+        mImageGenerator.setIconSize(50, 50);
 
 // Set the size of the date and month font in dip.
-                mImageGenerator.setDateSize(30);
-                mImageGenerator.setMonthSize(10);
+        mImageGenerator.setDateSize(30);
+        mImageGenerator.setMonthSize(10);
 
 // Set the position of the date and month in dip.
-                mImageGenerator.setDatePosition(42);
-                mImageGenerator.setMonthPosition(14);
+        mImageGenerator.setDatePosition(42);
+        mImageGenerator.setMonthPosition(14);
 
 // Set the color of the font to be generated
-                mImageGenerator.setDateColor(Color.parseColor("#3c6eaf"));
-                mImageGenerator.setMonthColor(Color.WHITE);
+        mImageGenerator.setDateColor(Color.parseColor("#3c6eaf"));
+        mImageGenerator.setMonthColor(Color.WHITE);
 
-                // abookingphoto.setOnClickListener(new View.OnClickListener() {
-                //  @Override
-                //   public void onClick(View v) {
-                final Calendar mCurrentDate = Calendar.getInstance();
-                int year=mCurrentDate.get(Calendar.YEAR);
-                int month=mCurrentDate.get(Calendar.MONTH);
-                int day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
+        callogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCurrentDate = Calendar.getInstance();
+                year=mCurrentDate.get(Calendar.YEAR);
+                month=mCurrentDate.get(Calendar.MONTH);
+                day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
+                //final String abc= getAge(year, month, day);
 
                 DatePickerDialog mPickerDialog =  new DatePickerDialog(RegisterActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int Year, int Month, int Day) {
-                        String datedmy= Year+"_"+ (Month+1)+"_"+Day;
-                        editTextcal.setText(datedmy);
-                      //  Toast.makeText(RegisterActivity.this,"Your age= "+abc, Toast.LENGTH_LONG).show();
+                        caltext=Year+"_"+ (Month+1)+"_"+Day;
+                        editTextcal.setText(caltext);
+                        //  Toast.makeText(RegisterActivity.this,"Your age= "+abc, Toast.LENGTH_LONG).show();
 
-                        mCurrentDate.set(Year, ((Month/10)+1),Day);
+                        mCurrentDate.set(Year, (Month+1),Day);
                         //   mImageGenerator.generateDateImage(mCurrentDate, R.drawable.empty_calendar);
                     }
                 }, year, month, day);
@@ -176,22 +180,22 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         getLocation();
         //--------------------------------------
 /**
-// spinner for countries
-        ArrayAdapter<CharSequence> adapterc = ArrayAdapter.createFromResource(
-                RegisterActivity.this, R.array.countries_array, android.R.layout.simple_spinner_item);
-        adapterc.setDropDownViewResource(R.layout.spinner_list_item);
-        spinnerCountry.setAdapter(adapterc);
+ // spinner for countries
+ ArrayAdapter<CharSequence> adapterc = ArrayAdapter.createFromResource(
+ RegisterActivity.this, R.array.countries_array, android.R.layout.simple_spinner_item);
+ adapterc.setDropDownViewResource(R.layout.spinner_list_item);
+ spinnerCountry.setAdapter(adapterc);
 
-        spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.colorText));
-            }
+ spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+@Override
+public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.colorText));
+}
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });**/
+@Override
+public void onNothingSelected(AdapterView<?> parent) {
+}
+});**/
 
         // spinner for type
         ArrayAdapter<CharSequence> adaptert = ArrayAdapter.createFromResource(
@@ -203,9 +207,9 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.colorText));
-             String mtype = spinnerType.getSelectedItem().toString().trim();
+                String mtype = spinnerType.getSelectedItem().toString().trim();
                 if (mtype.equalsIgnoreCase("User")) {
-                   // specialtyEditText.setVisibility(View.GONE);
+                    // specialtyEditText.setVisibility(View.GONE);
                     linearSpecialty.setVisibility(LinearLayout.GONE);
                     linearCalender.setVisibility(LinearLayout.VISIBLE);
 
@@ -213,14 +217,14 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
 
 
                 } else if (mtype.equalsIgnoreCase("Doctor")) {
-                   // editTextcal.setVisibility(View.GONE);
+                    // editTextcal.setVisibility(View.GONE);
                     linearCalender.setVisibility(LinearLayout.GONE);
                     linearSpecialty.setVisibility(LinearLayout.VISIBLE);
 
 
 
                 } else {// (mtype .equalsIgnoreCase ("Hospital") )
-                   // editTextcal.setVisibility(View.GONE);
+                    // editTextcal.setVisibility(View.GONE);
                     linearCalender.setVisibility(LinearLayout.GONE);
                     linearSpecialty.setVisibility(LinearLayout.VISIBLE);
 
@@ -339,17 +343,17 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
                             databaseUserReg.child(mAuth.getCurrentUser().getUid()).setValue(regdatauser);
 
                         }else {
-                           // DatabaseReference reference = databaseDoctor.push();
-                           // String id = reference.getKey();
+                            // DatabaseReference reference = databaseDoctor.push();
+                            // String id = reference.getKey();
                             String id = mAuth.getCurrentUser().getUid();
                             DoctorFirebaseClass doctorfirebaseclass = new DoctorFirebaseClass(id,mName, mPhone, mCity, mSpecialty, mEmail, mtype);
                             databaseDoctor.child(id).setValue(doctorfirebaseclass);
-                           // databaseDoctorReg.child(mAuth.getCurrentUser().getUid()).setValue(regdatadoctor);
+                            // databaseDoctorReg.child(mAuth.getCurrentUser().getUid()).setValue(regdatadoctor);
                         }
-                         Intent intend = new Intent(RegisterActivity.this, AllDoctorActivity.class);
-                         intend.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                         finish();
-                         startActivity(intend);
+                        Intent intend = new Intent(RegisterActivity.this, AllDoctorActivity.class);
+                        intend.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        finish();
+                        startActivity(intend);
 
                     } else {
                         //Log.e(TAG, task.getException().getMessage());
@@ -377,7 +381,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
             return false;
         }
     }
-//-----------------------------add Gps----------------------------------
+    //-----------------------------add Gps----------------------------------
     void getLocation() {
         try {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -409,8 +413,9 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
             Log.v("Image2",city);
             Log.v("Image3",state);
             Log.v("Image4",country);
-
+            editTextAddress.setEnabled(true);
             editTextAddress.setText(address);
+            editTextAddress.setEnabled(false);
 
             // editTextAddress.setText(addresses.get(0).getAddressLine(0)+", "+addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
             //Toast.makeText(RegisterActivity.this, addresses.get(0).getAddressLine(2), Toast.LENGTH_SHORT).show();

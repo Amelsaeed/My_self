@@ -70,7 +70,7 @@
                 >
             <CheckBox
                 android:button="@drawable/fav_checkbox_selector"
-                android:id="@+id/tasken"
+                android:id="@+id/fav_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />

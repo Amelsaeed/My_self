@@ -38,6 +38,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1">
 
             <ImageView
@@ -65,63 +66,75 @@
             android:layout_margin="15dp"
             android:orientation="vertical">
 
-
-
-
-
-
-
                 <TextView
                     android:id="@+id/ppcity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
+                    android:paddingBottom="6dp"
                     android:text="State/ City"
                     android:textColor="#000"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-
                     />
 
-
-
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e6dede"
+                />
 
                 <TextView
                     android:id="@+id/pspeciality"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
+                    android:paddingBottom="6dp"
                     android:text="Specialty"
                     android:textColor="#000"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-
                     />
 
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e6dede"
+                />
 
                 <TextView
                     android:id="@+id/pdegree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
+                    android:paddingBottom="6dp"
+
                     android:text="Degree"
                     android:textColor="#000"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
 
                     />
 
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e6dede"
+                />
                 <TextView
                     android:id="@+id/pphone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
+                    android:paddingBottom="6dp"
+
                     android:text="Phone Number"
                     android:textColor="#000"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
 
                     />
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e6dede"
+                />
 
 
                 <TextView
@@ -141,6 +154,11 @@
         </LinearLayout>
 
     </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e6dede"
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

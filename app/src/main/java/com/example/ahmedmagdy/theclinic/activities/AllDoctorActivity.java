@@ -69,7 +69,7 @@ public class AllDoctorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
-                Intent it = new Intent(AllDoctorActivity.this, UserProfileActivity.class);
+                Intent it = new Intent(AllDoctorActivity.this, FavActivity.class);
                 startActivity(it);
             }
         });
@@ -163,4 +163,5 @@ public class AllDoctorActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
     }
+
 }

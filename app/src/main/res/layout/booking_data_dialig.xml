@@ -68,7 +68,9 @@
                android:inputType="textPostalAddress"
                android:textColor="#000"
                android:textColorHint="#000000"
-               android:textSize="13dp" />
+               android:textSize="13dp"
+                android:enabled="false"
+               />
 
 
 

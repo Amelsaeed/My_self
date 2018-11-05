@@ -8,17 +8,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ahmedmagdy.theclinic.R;
 import com.example.ahmedmagdy.theclinic.activities.DoctorProfileActivity;
+import com.example.ahmedmagdy.theclinic.activities.FavActivity;
 import com.example.ahmedmagdy.theclinic.classes.DoctorFirebaseClass;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +36,10 @@ import java.util.List;
  */
 
 public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements Filterable {
-    private Activity context;
     List<DoctorFirebaseClass> doctorList;
+    private Activity context;
     private List<DoctorFirebaseClass> mSearchList;
+    private FirebaseAuth mAuth;
 
     private String a1;
 
@@ -39,6 +48,7 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
         this.context = context;
         this.doctorList = doctorList;
     }
+
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -49,13 +59,49 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
         final TextView adoctorspecialty = (TextView) listViewItem.findViewById(R.id.doctor_specialty);
         final TextView adoctorcity = (TextView) listViewItem.findViewById(R.id.doctor_city);
 
+        final CheckBox favcheckbox = (CheckBox) listViewItem.findViewById(R.id.fav_checkbox);
+        mAuth = FirebaseAuth.getInstance();
+
 
         final ImageView adoctorphoto = (ImageView) listViewItem.findViewById(R.id.doctor_photo);
 
         DoctorFirebaseClass doctorclass = doctorList.get(position);
         //asize = trampList.size();
 
+        favcheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
+           @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               if(mAuth.getCurrentUser()== null){
+                   Toast.makeText(context, "Please log in first", Toast.LENGTH_LONG).show();
+                   buttonView.setChecked(false);
+               }
+               DatabaseReference databaseDoctor = FirebaseDatabase.getInstance().getReference("Doctordb");
+               DatabaseReference databaseDoctorFav = FirebaseDatabase.getInstance().getReference("Favourits")
+                       .child(mAuth.getCurrentUser().getUid());
+               DoctorFirebaseClass doctorclass = doctorList.get(position);
+               if (isChecked) {
+                   // update database
+                  // databaseDoctor.child(doctorclass.getcId()).child("checked").setValue(isChecked);
+                   databaseDoctorFav.child(doctorclass.getcId()).setValue(doctorclass);
+                   databaseDoctorFav.child(doctorclass.getcId()).child("checked").setValue(isChecked);
+/**
+                   Toast.makeText(context, doctorclass.getcName()+" is added to your fav.", Toast.LENGTH_LONG).show();
+                   Intent intent= new Intent(context, FavActivity.class);
+                   context.startActivity(intent);**/
+
+               } else {
+                  // databaseDoctor.child(doctorclass.getcId()).child("checked").setValue(isChecked);
+                   databaseDoctorFav.child(doctorclass.getcId()).setValue(null);
+
+                   Toast.makeText(context, doctorclass.getcName()+" is removed from your fav.", Toast.LENGTH_LONG).show();
+                   Intent intent= new Intent(context, FavActivity.class);
+                   context.startActivity(intent);
+               }
+
+           }
+          }
+        );
         adoctorphoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,11 +111,11 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
 
                 //uIntent.putExtra("DoctorID", doctorclass.getcId());
                 /** uIntent.putExtra("DoctorName", doctorclass.getcName());
-                uIntent.putExtra("DoctorCity", doctorclass.getcCity());
-                uIntent.putExtra("DoctorSpecialty", doctorclass.getcSpecialty());
-                uIntent.putExtra("DoctorUri", doctorclass.getcUri());**/
+                 uIntent.putExtra("DoctorCity", doctorclass.getcCity());
+                 uIntent.putExtra("DoctorSpecialty", doctorclass.getcSpecialty());
+                 uIntent.putExtra("DoctorUri", doctorclass.getcUri());**/
 
-               // uIntent.putExtra("userid",  hometramp.getUserId());
+                // uIntent.putExtra("userid",  hometramp.getUserId());
                 uIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(uIntent);
                 // context.finish();
@@ -77,13 +123,14 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
         });
 
 
-
         adoctorname.setText(doctorclass.getcName());
         adoctorspecialty.setText(doctorclass.getcSpecialty());
         adoctorcity.setText(doctorclass.getcCity());
+        favcheckbox.setChecked(doctorclass.getChecked());//normal code retrive status of checkbox from firebase
 
-        a1=doctorclass.getcUri();
-        if(a1 != null) {
+
+        a1 = doctorclass.getcUri();
+        if (a1 != null) {
 
             /** RequestOptions requestOptions = new RequestOptions();
              requestOptions = requestOptions.transforms(new RoundedCorners(16));**/
@@ -94,7 +141,7 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
                     .apply(RequestOptions.circleCropTransform())
                     // .apply(requestOptions)
                     .into(adoctorphoto);
-        }else{
+        } else {
             Glide.with(context)
                     .load("https://firebasestorage.googleapis.com/v0/b/the-clinic-66fa1.appspot.com/o/doctor_logo_m.jpg?alt=media&token=2cbb0305-145f-4568-99a2-b76d8011f287")
                     .apply(RequestOptions.circleCropTransform())
@@ -104,6 +151,7 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
 
         return listViewItem;
     }
+
     @Override
     public int getCount() {
         return doctorList.size();
