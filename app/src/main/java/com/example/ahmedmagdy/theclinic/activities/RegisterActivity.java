@@ -26,6 +26,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,7 +39,10 @@ import android.widget.Toast;
 import com.example.ahmedmagdy.theclinic.R;
 import com.example.ahmedmagdy.theclinic.classes.DoctorFirebaseClass;
 import com.example.ahmedmagdy.theclinic.classes.RegisterClass;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,13 +50,15 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kd.dynamic.calendar.generator.ImageGenerator;
+import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class RegisterActivity extends AppCompatActivity implements LocationListener{
+public class RegisterActivity extends AppCompatActivity implements OnRequestPermissionsResultCallback{
     private ImageView callogo;
 
     private TextView singIn, signUp;
@@ -63,7 +69,10 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
     DatabaseReference databaseDoctor;
     //DatabaseReference databaseDoctorReg;
     FirebaseAuth mAuth;
-    LocationManager locationManager;
+
+    final int theRequestCodeForLocation = 1;
+    private FusedLocationProviderClient mFusedLocationClient;
+    Boolean isPermissionGranted;
     String caltext;
     Calendar mCurrentDate;
     int year,month,day;
@@ -172,12 +181,22 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         });
         //--------Gps---------------------
 
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        requestPermission();
 
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+        if(isPermissionGranted){
 
+            getLocation();
+        }else{
+            requestPermission();
+        if(isPermissionGranted){
+                //We have it, Get the location.
+                getLocation();
+            }
+            else {
+                 Toast.makeText(RegisterActivity.this, "Please Give us permission so you can use the app", Toast.LENGTH_SHORT).show();
+            }
         }
-        getLocation();
         //--------------------------------------
 /**
  // spinner for countries
@@ -382,66 +401,109 @@ public void onNothingSelected(AdapterView<?> parent) {
         }
     }
     //-----------------------------add Gps----------------------------------
-    void getLocation() {
-        try {
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, this);
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+    /**
+     * Request the Location Permission
+     */
+    private void requestPermission(){
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, theRequestCodeForLocation);
         }
-        catch(SecurityException e) {
+        else{
+            isPermissionGranted = true;
+        }
+
+    }
+
+   /**
+     * this method gets the location of the user then
+     * Calls the showAddress Method and pass to it the Latitude
+     * and the Longitude
+     */
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, theRequestCodeForLocation);
+        }
+
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    showAddress(latitude,longitude);
+                }else{
+                    Toast.makeText(RegisterActivity.this, "Error we didn't get the Location\n Please try again after Few seconds", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+    /**
+     * this method shows the User's address to the screen, it calls the getAddress which returns a string
+     * contains the address then changes the TextView text to it.
+     * @param latitude is the latitude of the location
+     * @param longitude is the longitude of the location
+     */
+    private void showAddress(double latitude, double longitude){
+         String msg = "";
+
+        try {
+            msg = getAddress(latitude, longitude);
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        editTextAddress.setText(msg);
+
     }
 
+
+    /**
+     * this method is called by android system after we request a permission
+     * and the system pass the result of our request to this method so we can check if we got
+     * the permission or not
+     */
     @Override
-    public void onLocationChanged(Location location) {
-
-        //  City.setText("Latitude: " + location.getLatitude() + "\n Longitude: " + location.getLongitude());
-
-        try {
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
-
-            Log.v("Image1",address);
-            Log.v("Image2",city);
-            Log.v("Image3",state);
-            Log.v("Image4",country);
-            editTextAddress.setEnabled(true);
-            editTextAddress.setText(address);
-            editTextAddress.setEnabled(false);
-
-            // editTextAddress.setText(addresses.get(0).getAddressLine(0)+", "+addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
-            //Toast.makeText(RegisterActivity.this, addresses.get(0).getAddressLine(2), Toast.LENGTH_SHORT).show();
-
-
-        }catch(Exception e)
-        {
-
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch(requestCode){
+            case theRequestCodeForLocation:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    isPermissionGranted = true;
+                }else{
+                   Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+                    isPermissionGranted = false;
+                }
+                break;
         }
 
     }
-    @Override
-    public void onProviderDisabled(String provider) {
-        Toast.makeText(RegisterActivity.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+
+    /**
+     * this method takes the longitude and latitude of the location then convert them into real address
+     * and return it as string
+     * @param latitude the Latitude
+     * @param longitude the Longitude
+     * @return the address as String
+     * @throws IOException
+     */
+    private String getAddress(double latitude, double longitude) throws IOException {
+
+        //Geocoder class helps us to convert longitude and latitude into Address
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        List<Address> addresses;
+        addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+        String address = "Address : " + addresses.get(0).getAddressLine(0);
+        String city = "City: " + addresses.get(0).getLocality();
+        String state = "State:" + addresses.get(0).getAdminArea();
+        String country = "Country: " + addresses.get(0).getCountryName();
+   String wholeAddress = address + "\n" + city + "\n" + state + "\n" + country;
+   return  wholeAddress;
+
     }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-
 }
 
