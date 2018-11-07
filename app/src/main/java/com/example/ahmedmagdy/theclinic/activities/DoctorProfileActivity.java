@@ -998,7 +998,6 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
     private void requestPermission(){
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-<<<<<<< HEAD
 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, theRequestCodeForLocation);
         }
@@ -1030,28 +1029,9 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
                 }
             }
         });
-=======
-
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, theRequestCodeForLocation);
-        }
-        else{
-            isPermissionGranted = true;
-        }
-
->>>>>>> 1945f2bf7e67ffc26c1360f5f16fb8d39921b4a4
     }
 
-    /**
-     * this method gets the location of the user then
-     * Calls the showAddress Method and pass to it the Latitude
-     * and the Longitude
-     */
-    private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, theRequestCodeForLocation);
-        }
 
-<<<<<<< HEAD
     /**
      * this method shows the User's address to the screen, it calls the getAddress which returns a string
      * contains the address then changes the TextView text to it.
@@ -1060,21 +1040,6 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
      */
     private void showAddress(double latitude, double longitude){
         String msg = "";
-=======
-        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    showAddress(latitude,longitude);
-                }else{
-                    Toast.makeText(DoctorProfileActivity.this, "Error we didn't get the Location\n Please try again after Few seconds", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
->>>>>>> 1945f2bf7e67ffc26c1360f5f16fb8d39921b4a4
 
         try {
             msg = getAddress(latitude, longitude);
@@ -1085,7 +1050,6 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
 //
     }
 
-<<<<<<< HEAD
 
     /**
      * this method is called by android system after we request a permission
@@ -1104,65 +1068,10 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
                     isPermissionGranted = false;
                 }
                 break;
-=======
-    /**
-     * this method shows the User's address to the screen, it calls the getAddress which returns a string
-     * contains the address then changes the TextView text to it.
-     * @param latitude is the latitude of the location
-     * @param longitude is the longitude of the location
-     */
-    private void showAddress(double latitude, double longitude){
-        String msg = "";
-
-        try {
-            msg = getAddress(latitude, longitude);
-        } catch (IOException e) {
-            e.printStackTrace();
->>>>>>> 1945f2bf7e67ffc26c1360f5f16fb8d39921b4a4
         }
-        pcity.setText(msg);
 
     }
 
-<<<<<<< HEAD
-    /**
-     * this method takes the longitude and latitude of the location then convert them into real address
-     * and return it as string
-     * @param latitude the Latitude
-     * @param longitude the Longitude
-     * @return the address as String
-     * @throws IOException
-     */
-    private String getAddress(double latitude, double longitude) throws IOException {
-=======
-
-    /**
-     * this method is called by android system after we request a permission
-     * and the system pass the result of our request to this method so we can check if we got
-     * the permission or not
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        switch(requestCode){
-            case theRequestCodeForLocation:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    isPermissionGranted = true;
-                }else{
-                    Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
-                    isPermissionGranted = false;
-                }
-                break;
-        }
->>>>>>> 1945f2bf7e67ffc26c1360f5f16fb8d39921b4a4
-
-        //Geocoder class helps us to convert longitude and latitude into Address
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
-<<<<<<< HEAD
-        List<Address> addresses;
-        addresses = geocoder.getFromLocation(latitude, longitude, 1);
-=======
     /**
      * this method takes the longitude and latitude of the location then convert them into real address
      * and return it as string
@@ -1178,14 +1087,6 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
 
         List<Address> addresses;
         addresses = geocoder.getFromLocation(latitude, longitude, 1);
-
-        String address = "Address : " + addresses.get(0).getAddressLine(0);
-        String city = "City: " + addresses.get(0).getLocality();
-        String state = "State:" + addresses.get(0).getAdminArea();
-        String country = "Country: " + addresses.get(0).getCountryName();
-        String wholeAddress = address + "\n" + city + "\n" + state + "\n" + country;
-        return  wholeAddress;
->>>>>>> 1945f2bf7e67ffc26c1360f5f16fb8d39921b4a4
 
         address =  addresses.get(0).getAddressLine(0);
         String city = "City: " + addresses.get(0).getLocality();
@@ -1195,12 +1096,8 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
         String wholeAddress = address ;
        // pcity.setText(address);
 
-<<<<<<< HEAD
         return  wholeAddress;
 
     }
 
 }
-=======
-}
->>>>>>> 1945f2bf7e67ffc26c1360f5f16fb8d39921b4a4
