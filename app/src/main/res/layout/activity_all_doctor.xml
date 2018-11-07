@@ -26,7 +26,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/ic_camera"
+            android:src="@drawable/ic_favorite"
 
             />
     </LinearLayout>

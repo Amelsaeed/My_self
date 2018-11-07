@@ -74,7 +74,7 @@ public class FavActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
-                Intent it = new Intent(FavActivity.this, AllDoctorActivity.class);
+                Intent it = new Intent(FavActivity.this, UserProfileActivity.class);
                 startActivity(it);
             }
         });

@@ -1,5 +1,6 @@
 package com.example.ahmedmagdy.theclinic.activities;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -44,6 +45,8 @@ import com.example.ahmedmagdy.theclinic.Adapters.BookingAdapter;
 import com.example.ahmedmagdy.theclinic.R;
 import com.example.ahmedmagdy.theclinic.classes.BookingClass;
 import com.example.ahmedmagdy.theclinic.classes.BookingTimesClass;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,8 +69,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
+import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 
-public class DoctorProfileActivity extends AppCompatActivity implements LocationListener {
+public class DoctorProfileActivity extends AppCompatActivity implements OnRequestPermissionsResultCallback {
     ImageView ppicuri;
     TextView pname,pcity,pspeciality,pdegree,pphone,pprice,ptime,paddbook;
     EditText peditbox ;
@@ -77,8 +81,11 @@ public class DoctorProfileActivity extends AppCompatActivity implements Location
     private Uri imagePath;
     private final int GALLERY_REQUEST_CODE = 1;
     private final int CAMERA_REQUEST_CODE = 2;
-String address;
+    String address;
     String mTrampPhotoUrl = "";
+
+    double latitude;
+    double longitude;
     int reloadCount = 0;
     byte[] byteImageData;
 
@@ -91,7 +98,9 @@ String address;
     String DoctorID, uid,mDate,picuri;
     ListView listViewBooking;
     private List<BookingClass> bookingList;
-    LocationManager locationManager;
+    final int theRequestCodeForLocation = 1;
+    private FusedLocationProviderClient mFusedLocationClient;
+    Boolean isPermissionGranted;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,25 +135,25 @@ String address;
         FirebaseUser user = mAuth.getCurrentUser();//mAuth.getCurrentUser().getUid()
         if (user != null) {
             if(user.getUid() != null){
-                 uid = user.getUid();
-               // Toast.makeText(DoctorProfileActivity.this, uid, Toast.LENGTH_LONG).show();
+                uid = user.getUid();
+                // Toast.makeText(DoctorProfileActivity.this, uid, Toast.LENGTH_LONG).show();
 
             }
 
         }
-            Intent intent = getIntent();
+        Intent intent = getIntent();
         DoctorID = intent.getStringExtra("DoctorID");
-       // Toast.makeText(DoctorProfileActivity.this, DoctorID, Toast.LENGTH_LONG).show();
+        // Toast.makeText(DoctorProfileActivity.this, DoctorID, Toast.LENGTH_LONG).show();
 
         if(!DoctorID.equals(uid)){paddbook.setVisibility(View.GONE);}
         getallData();
 
 
         pname.setOnLongClickListener(new View.OnLongClickListener() {
-                    public boolean onLongClick(View view) {
-                        if(DoctorID.equals(uid)){
-                String whatdata = "Name";
-                editDialog(whatdata);}
+            public boolean onLongClick(View view) {
+                if(DoctorID.equals(uid)){
+                    String whatdata = "Name";
+                    editDialog(whatdata);}
                 return true;
             }
 
@@ -159,8 +168,8 @@ String address;
         pcity.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
                 if(DoctorID.equals(uid)){
-                String whatdata = "State/ City";
-                editDialog(whatdata);}
+                    String whatdata = "State/ City/ Region";
+                    editDialog(whatdata);}
                 return true;
             }
         });
@@ -174,8 +183,8 @@ String address;
         pspeciality.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
                 if(DoctorID.equals(uid)){
-                String whatdata = "Specialty";
-                editDialog(whatdata);}
+                    String whatdata = "Specialty";
+                    editDialog(whatdata);}
                 return true;
             }
         });
@@ -189,8 +198,8 @@ String address;
         pdegree.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
                 if(DoctorID.equals(uid)){
-                String whatdata = "Degree";
-                editDialog(whatdata);}
+                    String whatdata = "Degree";
+                    editDialog(whatdata);}
                 return true;
             }
         });
@@ -204,8 +213,8 @@ String address;
         pphone.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
                 if(DoctorID.equals(uid)){
-                String whatdata = "Phone Number";
-                editDialog(whatdata);}
+                    String whatdata = "Phone Number";
+                    editDialog(whatdata);}
                 return true;
             }
         });
@@ -219,8 +228,8 @@ String address;
         pprice.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
                 if(DoctorID.equals(uid)){
-                String whatdata = "Detection price";
-                editDialog(whatdata);}
+                    String whatdata = "Detection price";
+                    editDialog(whatdata);}
                 return true;
             }
         });
@@ -234,8 +243,8 @@ String address;
         ptime.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
                 if(DoctorID.equals(uid)){
-                String whatdata = "Average detection time in min";
-                editDialog(whatdata);}
+                    String whatdata = "Average detection time in min";
+                    editDialog(whatdata);}
                 return true;
             }
         });
@@ -257,12 +266,23 @@ String address;
         ////////////////////////////////
         //--------Gps---------------------
 
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        requestPermission();
 
+        if(isPermissionGranted){
+
+            getLocation();
+        }else{
+            requestPermission();
+            if(isPermissionGranted){
+                //We have it, Get the location.
+                getLocation();
+            }
+            else {
+                Toast.makeText(DoctorProfileActivity.this, "Please Give us permission so you can use the app", Toast.LENGTH_SHORT).show();
+            }
         }
-
         //--------------------------------------
         peditbox.addTextChangedListener(new TextWatcher() {
             @Override
@@ -272,32 +292,22 @@ String address;
                     final String about1 = peditbox.getText().toString().trim();
                     databaseDoctor.child(DoctorID).child("cAbout").setValue(about1);
                 }/**else {
-                    //////////////////////////////
-
-                        Toast.makeText(DoctorProfileActivity.this, "You can't change it", Toast.LENGTH_LONG).show();
-
-                        final ValueEventListener postListener1 = new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot1) {
-
-
-                                String DoctorAbout = dataSnapshot1.child(DoctorID).child("cAbout").getValue(String.class);
-
-                                if (DoctorAbout != null) {peditbox.setText(DoctorAbout);}
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                // Getting Post failed, log a message
-                            }
-                        };
-                        databaseDoctor.addValueEventListener(postListener1);
-
-
-
-                    ////////////////////////////////////
-                }**/
+                 //////////////////////////////
+                 Toast.makeText(DoctorProfileActivity.this, "You can't change it", Toast.LENGTH_LONG).show();
+                 final ValueEventListener postListener1 = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot1) {
+                String DoctorAbout = dataSnapshot1.child(DoctorID).child("cAbout").getValue(String.class);
+                if (DoctorAbout != null) {peditbox.setText(DoctorAbout);}
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                }
+                };
+                 databaseDoctor.addValueEventListener(postListener1);
+                 ////////////////////////////////////
+                 }**/
             }
 
             @Override
@@ -316,9 +326,10 @@ String address;
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
                 // TODO Auto-generated method stub
+
                 BookingClass bookingclass = bookingList.get(position);
                 final String timeID= bookingclass.getCbid();
-               // Toast.makeText(DoctorProfileActivity.this, timeID, Toast.LENGTH_LONG).show();
+                // Toast.makeText(DoctorProfileActivity.this, timeID, Toast.LENGTH_LONG).show();
 //////////////////////////////////////////////////
                 final Dialog dialog = new Dialog(DoctorProfileActivity.this);
                 dialog.setContentView(R.layout.chose_account_dialog);
@@ -365,61 +376,53 @@ String address;
 
                 return true;
             }
-            });
+        });
 
-      /**  listViewBooking.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
-                // TODO Auto-generated method stub
-                BookingClass bookingclass = bookingList.get(position);
-               final String timeID= bookingclass.getCbid();
-                Toast.makeText(DoctorProfileActivity.this, timeID, Toast.LENGTH_LONG).show();
-
-                ///***********************calender**********************************************
-                ImageGenerator mImageGenerator = new ImageGenerator(DoctorProfileActivity.this);
-
-// Set the icon size to the generated in dip.
-                mImageGenerator.setIconSize(50, 50);
-
-// Set the size of the date and month font in dip.
-                mImageGenerator.setDateSize(30);
-                mImageGenerator.setMonthSize(10);
-
-// Set the position of the date and month in dip.
-                mImageGenerator.setDatePosition(42);
-                mImageGenerator.setMonthPosition(14);
-
-// Set the color of the font to be generated
-                mImageGenerator.setDateColor(Color.parseColor("#3c6eaf"));
-                mImageGenerator.setMonthColor(Color.WHITE);
-
-               // abookingphoto.setOnClickListener(new View.OnClickListener() {
-                  //  @Override
-                 //   public void onClick(View v) {
-                        final Calendar mCurrentDate = Calendar.getInstance();
-                        int year=mCurrentDate.get(Calendar.YEAR);
-                        int month=mCurrentDate.get(Calendar.MONTH);
-                        int day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
-                        DatePickerDialog mPickerDialog =  new DatePickerDialog(DoctorProfileActivity.this, new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker datePicker, int Year, int Month, int Day) {
-                                String datedmy= Year+"_"+ (Month+1)+"_"+Day;
-                                Toast.makeText(DoctorProfileActivity.this, datedmy, Toast.LENGTH_LONG).show();
-                                // Toast.makeText(context, id+doctorID, Toast.LENGTH_LONG).show();
-                        makepatientbooking(timeID, datedmy);
-                                //editTextcal.setText(Year+"_"+ ((Month/10)+1)+"_"+Day);
-                                mCurrentDate.set(Year, ((Month+1)),Day);
-                                //   mImageGenerator.generateDateImage(mCurrentDate, R.drawable.empty_calendar);
-                            }
-                        }, year, month, day);
-                        mPickerDialog.show();
-                  //  }
-              //  });
-                ///***********************calender*********************************************
-
-
-                return true;
-            }
+        /**  listViewBooking.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
+        // TODO Auto-generated method stub
+        BookingClass bookingclass = bookingList.get(position);
+        final String timeID= bookingclass.getCbid();
+        Toast.makeText(DoctorProfileActivity.this, timeID, Toast.LENGTH_LONG).show();
+        ///***********************calender**********************************************
+        ImageGenerator mImageGenerator = new ImageGenerator(DoctorProfileActivity.this);
+        // Set the icon size to the generated in dip.
+        mImageGenerator.setIconSize(50, 50);
+        // Set the size of the date and month font in dip.
+        mImageGenerator.setDateSize(30);
+        mImageGenerator.setMonthSize(10);
+        // Set the position of the date and month in dip.
+        mImageGenerator.setDatePosition(42);
+        mImageGenerator.setMonthPosition(14);
+        // Set the color of the font to be generated
+        mImageGenerator.setDateColor(Color.parseColor("#3c6eaf"));
+        mImageGenerator.setMonthColor(Color.WHITE);
+        // abookingphoto.setOnClickListener(new View.OnClickListener() {
+        //  @Override
+        //   public void onClick(View v) {
+        final Calendar mCurrentDate = Calendar.getInstance();
+        int year=mCurrentDate.get(Calendar.YEAR);
+        int month=mCurrentDate.get(Calendar.MONTH);
+        int day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog mPickerDialog =  new DatePickerDialog(DoctorProfileActivity.this, new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker datePicker, int Year, int Month, int Day) {
+        String datedmy= Year+"_"+ (Month+1)+"_"+Day;
+        Toast.makeText(DoctorProfileActivity.this, datedmy, Toast.LENGTH_LONG).show();
+        // Toast.makeText(context, id+doctorID, Toast.LENGTH_LONG).show();
+        makepatientbooking(timeID, datedmy);
+        //editTextcal.setText(Year+"_"+ ((Month/10)+1)+"_"+Day);
+        mCurrentDate.set(Year, ((Month+1)),Day);
+        //   mImageGenerator.generateDateImage(mCurrentDate, R.drawable.empty_calendar);
+        }
+        }, year, month, day);
+        mPickerDialog.show();
+        //  }
+        //  });
+        ///***********************calender*********************************************
+        return true;
+        }
         });**/
 
         ppicuri.setOnClickListener(new View.OnClickListener() {
@@ -427,7 +430,7 @@ String address;
             public void onClick(View v) {
                 // Code here executes on main thread after user presses image
                 if(DoctorID.equals(uid)) {
-                displayImportImageDialog();}
+                    displayImportImageDialog();}
             }
         });
 
@@ -547,7 +550,7 @@ String address;
                         e.printStackTrace();
                     }
 
-                   // addDoctorTextView.setEnabled(true);
+                    // addDoctorTextView.setEnabled(true);
                 }
 
             } else if (requestCode == CAMERA_REQUEST_CODE) {
@@ -628,7 +631,7 @@ String address;
                 if(patientpic != null){
                     picuri=patientpic;
                 }else{picuri="https://firebasestorage.googleapis.com/v0/b/the-clinic-66fa1.appspot.com/o/user_logo_m.jpg?alt=media&token=ff53fa61-0252-43a4-8fa3-0eb3a3976ee5";}
-               // Toast.makeText(DoctorProfileActivity.this, picuri, Toast.LENGTH_LONG).show();
+                // Toast.makeText(DoctorProfileActivity.this, picuri, Toast.LENGTH_LONG).show();
 
                 Calendar calendar = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -637,7 +640,7 @@ String address;
                 ////to do/////////-------------------------------------------------------------
                 DatabaseReference reference1 = databasetimeBooking.push();
                 //final DatabaseReference databasetimeBooking = FirebaseDatabase.getInstance().getReference("bookingtimes").child(DoctorID).child(timeID).child(datedmy);
-               // DatabaseReference reference = databasetimeBooking.push();
+                // DatabaseReference reference = databasetimeBooking.push();
                 String timesid = reference1.getKey();
                 //Log.v("Data"," 2-User id :"+ mUserId);
                 String userid = mAuth.getCurrentUser().getUid();
@@ -659,52 +662,52 @@ String address;
         /*************************************/
 
     }
-////////////////////////////////////////////
+    ////////////////////////////////////////////
     private void editDialog(final String whatdata) {
 
 
-            final Dialog dialog = new Dialog(DoctorProfileActivity.this);
-            dialog.setContentView(R.layout.edit_data_dialig);
-            dialog.setTitle("Edit your data");
-            dialog.setCanceledOnTouchOutside(false);
+        final Dialog dialog = new Dialog(DoctorProfileActivity.this);
+        dialog.setContentView(R.layout.edit_data_dialig);
+       // dialog.setTitle("Edit your data");
+        dialog.setCanceledOnTouchOutside(false);
 
-            final EditText editfield = (EditText) dialog.findViewById(R.id.edit_data_tv_e);
-            TextView cancel = (TextView) dialog.findViewById(R.id.cancel_tv_e);
-            TextView submit = (TextView) dialog.findViewById(R.id.submit_tv_e);
+        final EditText editfield = (EditText) dialog.findViewById(R.id.edit_data_tv_e);
+        TextView cancel = (TextView) dialog.findViewById(R.id.cancel_tv_e);
+        TextView submit = (TextView) dialog.findViewById(R.id.submit_tv_e);
         editfield.setHint(whatdata);
 
         submit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final String editfield1 = editfield.getText().toString().trim();
+            @Override
+            public void onClick(View v) {
+                final String editfield1 = editfield.getText().toString().trim();
 
-                    if (editfield1.isEmpty()) {
-                        editfield.setError("Please fill the field");
-                        editfield.requestFocus();
-                        return;}
-                    getRegData(editfield1, whatdata);
-                    dialog.dismiss();
+                if (editfield1.isEmpty()) {
+                    editfield.setError("Please fill the field");
+                    editfield.requestFocus();
+                    return;}
+                getRegData(editfield1, whatdata);
+                dialog.dismiss();
 
-                }
-            });
+            }
+        });
 
 
-            cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
-            dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(false);
 
-            dialog.show();
-        }
+        dialog.show();
+    }
     private void getRegData(final String editfield1, final String whatdata) {
 
         if (whatdata.equals("Name")) {
             databaseDoctor.child(DoctorID).child("cName").setValue(editfield1);
-        } else if (whatdata.equals("State/ City")) {
+        } else if (whatdata.equals("State/ City/ Region")) {
             databaseDoctor.child(DoctorID).child("cCity").setValue(editfield1);
         } else if (whatdata.equals("Specialty")) {
             databaseDoctor.child(DoctorID).child("cSpecialty").setValue(editfield1);
@@ -719,7 +722,7 @@ String address;
         }
 
         //**************************************************//
-       // private void getallData();
+        // private void getallData();
         final ValueEventListener postListener1 = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot1) {
@@ -736,7 +739,7 @@ String address;
                 }else{pname.setText("Name");}
                 if(DoctorCity != null) {
                     pcity.setText(DoctorCity);
-                }else{pcity.setText("State/ City");}
+                }else{pcity.setText("State/ City/ Region");}
                 if(DoctorSpecialty != null) {
                     pspeciality.setText(DoctorSpecialty);
                 }else{pspeciality.setText("Specialty");}
@@ -761,108 +764,108 @@ String address;
         };
         databaseDoctor .addValueEventListener(postListener1);
     }
-/***-------------------------------------------------***/
-private void editDialogbook() {
+    /***-------------------------------------------------***/
+    private void editDialogbook() {
 
-    final DatabaseReference databaseBooking = FirebaseDatabase.getInstance().getReference("bookingdb").child(DoctorID);
+        final DatabaseReference databaseBooking = FirebaseDatabase.getInstance().getReference("bookingdb").child(DoctorID);
 
-    final Dialog dialog = new Dialog(DoctorProfileActivity.this);
-    dialog.setContentView(R.layout.booking_data_dialig);
-    dialog.setTitle("Edit your data");
-    dialog.setCanceledOnTouchOutside(false);
-    getLocation();
-    Toast.makeText(this, address, Toast.LENGTH_LONG).show();
+        final Dialog dialog = new Dialog(DoctorProfileActivity.this);
+        dialog.setContentView(R.layout.booking_data_dialig);
+        dialog.setTitle("Edit your data");
+        dialog.setCanceledOnTouchOutside(false);
+        getLocation();
+        Toast.makeText(this, address, Toast.LENGTH_LONG).show();
 
-    dialogAddress = (EditText) dialog.findViewById(R.id.dialog_address);
-    dialogAddress.setEnabled(true);
-    dialogAddress.setText(address);
-    dialogAddress.setEnabled(false);
-
-
-    final EditText dialogTime = (EditText) dialog.findViewById(R.id.dialog_time);
-
-    TextView cancel = (TextView) dialog.findViewById(R.id.cancel_tv_e);
-    TextView submit = (TextView) dialog.findViewById(R.id.submit_tv_e);
+        dialogAddress = (EditText) dialog.findViewById(R.id.dialog_address);
+        dialogAddress.setEnabled(true);
+        dialogAddress.setText(address);
+        dialogAddress.setEnabled(false);
 
 
+        final EditText dialogTime = (EditText) dialog.findViewById(R.id.dialog_time);
 
-    submit.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            final String getaddress = dialogAddress.getText().toString().trim();
-            final String gettime = dialogTime.getText().toString().trim();
-
-            if (getaddress.isEmpty()) {
-                dialogAddress.setError("Please fill the address");
-                dialogAddress.requestFocus();
-                return;}
-            if (gettime.isEmpty()) {
-                dialogTime.setError("Please fill the times");
-                dialogTime.requestFocus();
-                return;}
-
-            DatabaseReference reference = databaseBooking.push();
-            String id = reference.getKey();
-            //Log.v("Data"," 2-User id :"+ mUserId);
-            BookingClass bookingclass = new BookingClass(id, gettime, getaddress,DoctorID);
-           // BookingAdapter myAdapter = new BookingAdapter(DoctorProfileActivity.this, bookingList, id, DoctorID);
-            // Database for Account Activity
-            databaseBooking.child(id).setValue(bookingclass);
-
-            dialog.dismiss();
-            //to refresh activity as you need to go back activity and return
-            finish();
-            startActivity(getIntent());
-
-        }
-    });
+        TextView cancel = (TextView) dialog.findViewById(R.id.cancel_tv_e);
+        TextView submit = (TextView) dialog.findViewById(R.id.submit_tv_e);
 
 
-    cancel.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            dialog.dismiss();
-        }
-    });
 
-    dialog.setCanceledOnTouchOutside(false);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String getaddress = dialogAddress.getText().toString().trim();
+                final String gettime = dialogTime.getText().toString().trim();
 
-    dialog.show();
-}
+                if (getaddress.isEmpty()) {
+                    dialogAddress.setError("Please fill the address");
+                    dialogAddress.requestFocus();
+                    return;}
+                if (gettime.isEmpty()) {
+                    dialogTime.setError("Please fill the times");
+                    dialogTime.requestFocus();
+                    return;}
+
+                DatabaseReference reference = databaseBooking.push();
+                String id = reference.getKey();
+                //Log.v("Data"," 2-User id :"+ mUserId);
+                BookingClass bookingclass = new BookingClass(id, gettime, getaddress,DoctorID,String.valueOf(latitude),String.valueOf(longitude));
+                // BookingAdapter myAdapter = new BookingAdapter(DoctorProfileActivity.this, bookingList, id, DoctorID);
+                // Database for Account Activity
+                databaseBooking.child(id).setValue(bookingclass);
+
+                dialog.dismiss();
+                //to refresh activity as you need to go back activity and return
+                finish();
+                startActivity(getIntent());
+
+            }
+        });
+
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+
+        dialog.show();
+    }
     protected void onStart() {
         super.onStart();
         progressBarBooking.setVisibility(View.VISIBLE);
-       // getRegData();
+        // getRegData();
         if (isNetworkConnected()) {
             final DatabaseReference databaseBooking = FirebaseDatabase.getInstance().getReference("bookingdb").child(DoctorID);
 
             //databaseTramp.child(country).child("Individual").child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             databaseBooking.addListenerForSingleValueEvent(new ValueEventListener() {
 
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        bookingList.clear();
-                        for(DataSnapshot doctorSnapshot: dataSnapshot.getChildren()){
-                            BookingClass bookingclass=doctorSnapshot.getValue(BookingClass.class);
-                            bookingList.add(0,bookingclass);// i= 0  (index)to start from top
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    bookingList.clear();
+                    for(DataSnapshot doctorSnapshot: dataSnapshot.getChildren()){
+                        BookingClass bookingclass=doctorSnapshot.getValue(BookingClass.class);
+                        bookingList.add(0,bookingclass);// i= 0  (index)to start from top
 
 
-
-                        }
-                        // }
-                        //}
-                        BookingAdapter adapter = new BookingAdapter(DoctorProfileActivity.this, bookingList);
-                        //adapter.notifyDataSetChanged();
-                        listViewBooking.setAdapter(adapter);
-                        progressBarBooking.setVisibility(View.GONE);
-                        // listViewTramp.setAdapter(adapter);
 
                     }
+                    // }
+                    //}
+                    BookingAdapter adapter = new BookingAdapter(DoctorProfileActivity.this, bookingList);
+                    //adapter.notifyDataSetChanged();
+                    listViewBooking.setAdapter(adapter);
+                    progressBarBooking.setVisibility(View.GONE);
+                    // listViewTramp.setAdapter(adapter);
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
 
 
         } else {
@@ -899,25 +902,25 @@ private void editDialogbook() {
 
 
                 if(DoctorName != null) {
-                   pname.setText(DoctorName);
-               }else{pname.setText("Name");}
+                    pname.setText(DoctorName);
+                }else{pname.setText("Name");}
                 if(DoctorCity != null) {
-                pcity.setText(DoctorCity);
-                }else{pcity.setText("State/ City");}
+                    pcity.setText(DoctorCity);
+                }else{pcity.setText("State/ City/ Region");}
                 if(DoctorSpecialty != null) {
-                pspeciality.setText(DoctorSpecialty);
+                    pspeciality.setText(DoctorSpecialty);
                 }else{pspeciality.setText("Specialty");}
                 if(DoctorDegree != null) {
-                pdegree.setText(DoctorDegree);
+                    pdegree.setText(DoctorDegree);
                 }else{pdegree.setText("Degree");}
                 if(DoctorPhone != null) {
-                pphone.setText(DoctorPhone);
+                    pphone.setText(DoctorPhone);
                 }else{pphone.setText("Phone Number");}
                 if(DoctorPrice != null) {
-                pprice.setText(DoctorPrice+"$");
+                    pprice.setText(DoctorPrice+"$");
                 }else{pprice.setText("Detection price");}
                 if(DoctorTime != null) {
-                ptime.setText(DoctorTime+"min.");
+                    ptime.setText(DoctorTime+"min.");
                 }else{ptime.setText("Not yet");}
                 if(DoctorAbout != null) {
                     peditbox.setText(DoctorAbout);
@@ -925,14 +928,14 @@ private void editDialogbook() {
                 RequestOptions requestOptions = new RequestOptions();
                 requestOptions = requestOptions.transforms(new RoundedCorners(16));
                 if(DoctorPic != null) {
-                     Glide.with(DoctorProfileActivity.this)
+                    Glide.with(DoctorProfileActivity.this)
                             .load(DoctorPic)
-                           .apply(requestOptions)
+                            .apply(requestOptions)
                             .into(ppicuri);
                 }else{
                     Glide.with(DoctorProfileActivity.this)
                             .load("https://firebasestorage.googleapis.com/v0/b/the-clinic-66fa1.appspot.com/o/doctor_logo_m.jpg?alt=media&token=d3108b95-4e16-4549-99b6-f0fa466e0d11")
-                           .apply(requestOptions)
+                            .apply(requestOptions)
                             .into(ppicuri);
                 }
 
@@ -989,63 +992,112 @@ private void editDialogbook() {
         return Math.round((float) dp * density);
     }
     //-----------------------------add Gps----------------------------------
-    public void getLocation() {
-        try {
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 5, this);
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+    /**
+     * Request the Location Permission
+     */
+    private void requestPermission(){
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, theRequestCodeForLocation);
         }
-        catch(SecurityException e) {
+        else{
+            isPermissionGranted = true;
+        }
+
+    }
+
+    /**
+     * this method gets the location of the user then
+     * Calls the showAddress Method and pass to it the Latitude
+     * and the Longitude
+     */
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, theRequestCodeForLocation);
+        }
+
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    showAddress(latitude,longitude);
+                }else{
+                    Toast.makeText(DoctorProfileActivity.this, "Error we didn't get the Location\n Please try again after Few seconds", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+    /**
+     * this method shows the User's address to the screen, it calls the getAddress which returns a string
+     * contains the address then changes the TextView text to it.
+     * @param latitude is the latitude of the location
+     * @param longitude is the longitude of the location
+     */
+    private void showAddress(double latitude, double longitude){
+        String msg = "";
+
+        try {
+            msg = getAddress(latitude, longitude);
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        //pcity.setText(msg);
+//
     }
 
+
+    /**
+     * this method is called by android system after we request a permission
+     * and the system pass the result of our request to this method so we can check if we got
+     * the permission or not
+     */
     @Override
-    public void onLocationChanged(Location location) {
-
-        //  City.setText("Latitude: " + location.getLatitude() + "\n Longitude: " + location.getLongitude());
-
-        try {
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-            address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
-
-            Log.v("Image1",address);
-            Log.v("Image2",city);
-            Log.v("Image3",state);
-            Log.v("Image4",country);
-
-
-            // editTextAddress.setText(addresses.get(0).getAddressLine(0)+", "+addresses.get(0).getAddressLine(1)+", "+addresses.get(0).getAddressLine(2));
-            //Toast.makeText(RegisterActivity.this, addresses.get(0).getAddressLine(2), Toast.LENGTH_SHORT).show();
-
-
-        }catch(Exception e)
-        {
-
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch(requestCode){
+            case theRequestCodeForLocation:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    isPermissionGranted = true;
+                }else{
+                    Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+                    isPermissionGranted = false;
+                }
+                break;
         }
 
     }
-    @Override
-    public void onProviderDisabled(String provider) {
-        Toast.makeText(DoctorProfileActivity.this, "Please Enable GPS and Internet", Toast.LENGTH_SHORT).show();
+
+    /**
+     * this method takes the longitude and latitude of the location then convert them into real address
+     * and return it as string
+     * @param latitude the Latitude
+     * @param longitude the Longitude
+     * @return the address as String
+     * @throws IOException
+     */
+    private String getAddress(double latitude, double longitude) throws IOException {
+
+        //Geocoder class helps us to convert longitude and latitude into Address
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        List<Address> addresses;
+        addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
+        address =  addresses.get(0).getAddressLine(0);
+        String city = "City: " + addresses.get(0).getLocality();
+        String state = "State:" + addresses.get(0).getAdminArea();
+        String country = "Country: " + addresses.get(0).getCountryName();
+       // String wholeAddress = address + "\n" + city + "\n" + state + "\n" + country;
+        String wholeAddress = address ;
+       // pcity.setText(address);
+
+        return  wholeAddress;
+
     }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
 
 }

@@ -67,7 +67,7 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
 
         DoctorFirebaseClass doctorclass = doctorList.get(position);
         //asize = trampList.size();
-
+        favcheckbox.setChecked(doctorclass.getChecked());
         favcheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
            @Override
@@ -85,11 +85,11 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
                   // databaseDoctor.child(doctorclass.getcId()).child("checked").setValue(isChecked);
                    databaseDoctorFav.child(doctorclass.getcId()).setValue(doctorclass);
                    databaseDoctorFav.child(doctorclass.getcId()).child("checked").setValue(isChecked);
-/**
-                   Toast.makeText(context, doctorclass.getcName()+" is added to your fav.", Toast.LENGTH_LONG).show();
-                   Intent intent= new Intent(context, FavActivity.class);
-                   context.startActivity(intent);**/
 
+                  Toast.makeText(context, doctorclass.getcName()+" is added to your fav.", Toast.LENGTH_LONG).show();
+                   Intent intent= new Intent(context, FavActivity.class);
+                   context.startActivity(intent);
+//return;
                } else {
                   // databaseDoctor.child(doctorclass.getcId()).child("checked").setValue(isChecked);
                    databaseDoctorFav.child(doctorclass.getcId()).setValue(null);
@@ -126,7 +126,7 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
         adoctorname.setText(doctorclass.getcName());
         adoctorspecialty.setText(doctorclass.getcSpecialty());
         adoctorcity.setText(doctorclass.getcCity());
-        favcheckbox.setChecked(doctorclass.getChecked());//normal code retrive status of checkbox from firebase
+       // favcheckbox.setChecked(doctorclass.getChecked());//normal code retrive status of checkbox from firebase
 
 
         a1 = doctorclass.getcUri();
@@ -175,7 +175,7 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
                 if (constraint != null) {
                     if (mSearchList != null && mSearchList.size() > 0) {
                         for (final DoctorFirebaseClass tramp : mSearchList) {
-                            if (tramp.getcName().toLowerCase()
+                            if (tramp.getcCity().toLowerCase()
                                     .contains(constraint.toString()))
                                 resultsList.add(tramp);
                         }
