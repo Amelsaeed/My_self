@@ -1060,7 +1060,7 @@ private void editDialogbook() {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        dialogAddress.setText(msg);
+        pcity.setText(msg);
 
     }
 
