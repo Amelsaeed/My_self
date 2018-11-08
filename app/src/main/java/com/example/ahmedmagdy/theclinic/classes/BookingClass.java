@@ -46,6 +46,7 @@ public class BookingClass {
         this.cbaddress = cbaddress;
     }
 
+
     public String getCbdoctorid() {
         return cbdoctorid;
     }
