@@ -100,8 +100,7 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
                }
 
            }
-          }
-        );
+          });
         adoctorphoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -25,7 +25,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         //get my image
-        myImageView = (ImageView) findViewById(R.id.splashlogo);
+        myImageView = (ImageView) findViewById(R.id.splash_logo);
 
         // load the animation file (my_anim)
         myAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.myanime);

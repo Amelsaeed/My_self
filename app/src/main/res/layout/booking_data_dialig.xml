@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:orientation="vertical">
 
        <LinearLayout
@@ -72,7 +73,87 @@
                 android:enabled="false"
                />
 
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginRight="5dp"
+               android:layout_marginLeft="5dp"
+               android:layout_marginTop="15dp"
 
+               android:orientation="horizontal">
+
+               <CheckBox
+                   android:id="@+id/sat"
+                   android:button="@drawable/cal_checkbox_selector"
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                   android:textColor="#000"
+                   android:text="s"/>
+
+               <CheckBox
+                   android:id="@+id/sun"
+                   android:button="@drawable/cal_checkbox_selector"
+
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                   android:textColor="#000"
+                   android:text="s"/>
+               <CheckBox
+                   android:id="@+id/mon"
+                   android:button="@drawable/cal_checkbox_selector"
+
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                   android:textColor="#000"
+                   android:text="m"/>
+               <CheckBox
+                   android:id="@+id/tus"
+                   android:button="@drawable/cal_checkbox_selector"
+
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                   android:textColor="#000"
+                   android:text="t"/>
+               <CheckBox
+                   android:id="@+id/wed"
+                   android:button="@drawable/cal_checkbox_selector"
+
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                   android:textColor="#000"
+                   android:text="w"/>
+               <CheckBox
+                   android:id="@+id/thu"
+                   android:button="@drawable/cal_checkbox_selector"
+
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                   android:textColor="#000"
+                   android:text="t"/>
+               <CheckBox
+                   android:id="@+id/fri"
+                   android:button="@drawable/cal_checkbox_selector"
+
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                   android:textColor="#000"
+                   android:text="f"/>
+
+           </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

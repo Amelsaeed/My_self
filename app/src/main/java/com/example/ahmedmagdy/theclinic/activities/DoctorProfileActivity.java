@@ -26,6 +26,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
+
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,6 +46,8 @@ import com.example.ahmedmagdy.theclinic.Adapters.BookingAdapter;
 import com.example.ahmedmagdy.theclinic.R;
 import com.example.ahmedmagdy.theclinic.classes.BookingClass;
 import com.example.ahmedmagdy.theclinic.classes.BookingTimesClass;
+import com.example.ahmedmagdy.theclinic.classes.DoctorFirebaseClass;
+import com.example.ahmedmagdy.theclinic.classes.MapClass;
 import com.example.ahmedmagdy.theclinic.classes.UtilClass;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -61,9 +67,11 @@ import com.kd.dynamic.calendar.generator.ImageGenerator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -82,7 +90,7 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
     private final int CAMERA_REQUEST_CODE = 2;
     String address;
     String mTrampPhotoUrl = "";
-
+    boolean satstate,sunstate,monstate,tusstate,wedstate,thustate,fristate;
     double latitude;
     double longitude;
     int reloadCount = 0;
@@ -321,11 +329,15 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
 
             }
         });
-        listViewBooking.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int position, long id) {
-                // TODO Auto-generated method stub
+        /**listViewBooking.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int position, long id) {**/
+        listViewBooking.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    final int position, long id) {
+                // TODO Auto-generated method stub
                 BookingClass bookingclass = bookingList.get(position);
                 final String timeID= bookingclass.getCbid();
                 // Toast.makeText(DoctorProfileActivity.this, timeID, Toast.LENGTH_LONG).show();
@@ -343,7 +355,7 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
-                        openClenderAction(timeID , position);
+                        openClenderAction(timeID, position);
                     }
                 });
 
@@ -373,7 +385,7 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
                 dialog.show();
                 //////////////////////////////////
 
-                return true;
+                //  return true;
             }
         });
 
@@ -464,15 +476,42 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
             @Override
             public void onDateSet(DatePicker datePicker, int Year, int Month, int Day) {
                 String datedmy= Year+"_"+ (Month+1)+"_"+Day;
+                try {
+                    String dayname=getDayNameFromDate( datedmy);
+                    Toast.makeText(DoctorProfileActivity.this, dayname, Toast.LENGTH_LONG).show();
+                    BookingClass bookingclass = bookingList.get(position);
+                    String a,b,c,d,e,f,g;
+                   if( bookingclass.getSatchecked()){ a="Saturday";}else{a="no";}
+                    if( bookingclass.getSunchecked()){ b="Sunday";}else{b="no";}
+                    if( bookingclass.getMonchecked()){ c="Monday";}else{c="no";}
+                    if( bookingclass.getTuschecked()){ d="Tuesday";}else{d="no";}
+                    if(bookingclass.getWedchecked()){ e="Wednesday";}else{e="no";}
+                    if(bookingclass.getThuchecked()){ f="Thursday";}else{f="no";}
+                    if( bookingclass.getFrichecked()){ g="Friday";}else{g="no";}
+if(dayname.equalsIgnoreCase(a)||dayname.equalsIgnoreCase(b)||dayname.equalsIgnoreCase(c)||dayname.equalsIgnoreCase(d)
+        ||dayname.equalsIgnoreCase(e)||dayname.equalsIgnoreCase(f)||dayname.equalsIgnoreCase(g) ){
+    makepatientbooking(timeID, datedmy, position);
+    Toast.makeText(DoctorProfileActivity.this, "is booked", Toast.LENGTH_LONG).show();
+}else{Toast.makeText(DoctorProfileActivity.this, "Not match", Toast.LENGTH_LONG).show();}
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(DoctorProfileActivity.this, datedmy, Toast.LENGTH_LONG).show();
                 // Toast.makeText(context, id+doctorID, Toast.LENGTH_LONG).show();
-                makepatientbooking(timeID, datedmy, position);
+
                 //editTextcal.setText(Year+"_"+ ((Month/10)+1)+"_"+Day);
                 mCurrentDate.set(Year, ((Month+1)),Day);
                 //   mImageGenerator.generateDateImage(mCurrentDate, R.drawable.empty_calendar);
             }
         }, year, month, day);
         mPickerDialog.show();
+    }
+    public static String getDayNameFromDate(String date) throws ParseException {
+        SimpleDateFormat inFormat = new SimpleDateFormat("yyyy_MM_dd");
+        Date dt = inFormat.parse(date);
+        SimpleDateFormat outFormat = new SimpleDateFormat("EEEE");
+        String dayName = outFormat.format(dt);
+        return dayName;
     }
 
     private void displayImportImageDialog() {
@@ -671,7 +710,7 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
 
         final Dialog dialog = new Dialog(DoctorProfileActivity.this);
         dialog.setContentView(R.layout.edit_data_dialig);
-       // dialog.setTitle("Edit your data");
+        // dialog.setTitle("Edit your data");
         dialog.setCanceledOnTouchOutside(false);
 
         final EditText editfield = (EditText) dialog.findViewById(R.id.edit_data_tv_e);
@@ -771,13 +810,14 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
     private void editDialogbook() {
 
         final DatabaseReference databaseBooking = FirebaseDatabase.getInstance().getReference("bookingdb").child(DoctorID);
+        final DatabaseReference databaseMap = FirebaseDatabase.getInstance().getReference("mapdb");
 
         final Dialog dialog = new Dialog(DoctorProfileActivity.this);
         dialog.setContentView(R.layout.booking_data_dialig);
         dialog.setTitle("Edit your data");
         dialog.setCanceledOnTouchOutside(false);
         getLocation();
-        Toast.makeText(this, address, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, address, Toast.LENGTH_LONG).show();
 
         dialogAddress = (EditText) dialog.findViewById(R.id.dialog_address);
         dialogAddress.setEnabled(true);
@@ -789,6 +829,67 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
 
         TextView cancel = (TextView) dialog.findViewById(R.id.cancel_tv_e);
         TextView submit = (TextView) dialog.findViewById(R.id.submit_tv_e);
+
+        CheckBox dsatcheckbox = (CheckBox) dialog.findViewById(R.id.sat);
+        CheckBox dsuncheckbox = (CheckBox) dialog.findViewById(R.id.sun);
+        CheckBox dmoncheckbox = (CheckBox) dialog.findViewById(R.id.mon);
+        CheckBox dtuscheckbox = (CheckBox) dialog.findViewById(R.id.tus);
+        CheckBox dwedcheckbox = (CheckBox) dialog.findViewById(R.id.wed);
+        CheckBox dthucheckbox = (CheckBox) dialog.findViewById(R.id.thu);
+        CheckBox dfricheckbox = (CheckBox) dialog.findViewById(R.id.fri);
+        //////////////////////////
+        dsatcheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((CheckBox) v).isChecked()) {satstate =true; } else { satstate =false;}
+            }
+        });
+        dsuncheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((CheckBox) v).isChecked()) {sunstate =true; } else { sunstate =false;}
+            }
+        });//satstate,sunstate,monstate,tusstate,wedstate,thustate,fristate
+        dmoncheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((CheckBox) v).isChecked()) {monstate =true; } else { monstate =false;}
+            }
+        });
+        dtuscheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((CheckBox) v).isChecked()) {tusstate =true; } else { tusstate =false;}
+            }
+        });
+        dwedcheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((CheckBox) v).isChecked()) {wedstate =true; } else { wedstate =false;}
+            }
+        });
+        dthucheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((CheckBox) v).isChecked()) {thustate =true; } else { thustate =false;}
+            }
+        });
+        dfricheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((CheckBox) v).isChecked()) {fristate =true; } else { fristate =false;}
+            }
+        });
+        ////////////////////
+
+
 
 
 
@@ -810,10 +911,36 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
                 DatabaseReference reference = databaseBooking.push();
                 String id = reference.getKey();
                 //Log.v("Data"," 2-User id :"+ mUserId);
-                BookingClass bookingclass = new BookingClass(id, gettime, getaddress,DoctorID,String.valueOf(latitude),String.valueOf(longitude));
+                BookingClass bookingclass = new BookingClass(id, gettime, getaddress,DoctorID,String.valueOf(latitude),String.valueOf(longitude),satstate,sunstate,monstate,tusstate,wedstate,thustate,fristate);
                 // BookingAdapter myAdapter = new BookingAdapter(DoctorProfileActivity.this, bookingList, id, DoctorID);
                 // Database for Account Activity
                 databaseBooking.child(id).setValue(bookingclass);
+                //////////////////////////////////////
+                final ValueEventListener postListener1 = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot1) {
+
+                        String DoctorName = dataSnapshot1.child(DoctorID).child("cName").getValue(String.class);
+                        String DoctorSpecialty = dataSnapshot1.child(DoctorID).child("cSpecialty").getValue(String.class);
+                        String DoctorPic = dataSnapshot1.child(DoctorID).child("cUri").getValue(String.class);
+                        if (DoctorPic == null){DoctorPic= "https://firebasestorage.googleapis.com/v0/b/the-clinic-66fa1.appspot.com/o/doctor_logo_m.jpg?alt=media&token=d3108b95-4e16-4549-99b6-f0fa466e0d11";}
+                        DatabaseReference reference = databaseMap.push();
+                        String idm = reference.getKey();
+                        //Log.v("Data"," 2-User id :"+ mUserId);
+                        MapClass mapclass = new MapClass(idm,DoctorID,String.valueOf(latitude),String.valueOf(longitude),DoctorName,DoctorSpecialty,DoctorPic);
+                        // BookingAdapter myAdapter = new BookingAdapter(DoctorProfileActivity.this, bookingList, id, DoctorID);
+                        // Database for Account Activity
+                        databaseMap.child(idm).setValue(mapclass);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // Getting Post failed, log a message
+                    }
+                };
+                databaseDoctor .addValueEventListener(postListener1);
+
+                ///////////////////////////////////////////////
 
                 dialog.dismiss();
                 //to refresh activity as you need to go back activity and return
@@ -850,7 +977,7 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
                     bookingList.clear();
                     for(DataSnapshot doctorSnapshot: dataSnapshot.getChildren()){
                         BookingClass bookingclass=doctorSnapshot.getValue(BookingClass.class);
-                        bookingList.add(0,bookingclass);// i= 0  (index)to start from top
+                        bookingList.add(bookingclass);// i= 0  (index)to start from top
 
 
 
@@ -1095,9 +1222,9 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
         String city = "City: " + addresses.get(0).getLocality();
         String state = "State:" + addresses.get(0).getAdminArea();
         String country = "Country: " + addresses.get(0).getCountryName();
-       // String wholeAddress = address + "\n" + city + "\n" + state + "\n" + country;
+        // String wholeAddress = address + "\n" + city + "\n" + state + "\n" + country;
         String wholeAddress = address ;
-       // pcity.setText(address);
+        // pcity.setText(address);
 
         return  wholeAddress;
 
@@ -1105,3 +1232,4 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
 
 
 }
+

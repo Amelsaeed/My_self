@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,11 +70,20 @@ public class BookingAdapter extends ArrayAdapter<BookingClass> {
         final TextView abookingaddress = (TextView) listViewItem.findViewById(R.id.Adress_book);
 
 
+        CheckBox dsatcheckbox = (CheckBox) listViewItem.findViewById(R.id.sat1);
+        CheckBox dsuncheckbox = (CheckBox) listViewItem.findViewById(R.id.sun1);
+        CheckBox dmoncheckbox = (CheckBox) listViewItem.findViewById(R.id.mon1);
+        CheckBox dtuscheckbox = (CheckBox) listViewItem.findViewById(R.id.tus1);
+        CheckBox dwedcheckbox = (CheckBox) listViewItem.findViewById(R.id.wed1);
+        CheckBox dthucheckbox = (CheckBox) listViewItem.findViewById(R.id.thu1);
+        CheckBox dfricheckbox = (CheckBox) listViewItem.findViewById(R.id.fri1);
+
         final ImageView abookingphoto = (ImageView) listViewItem.findViewById(R.id.image_book);
 
         BookingClass bookingclass = bookingList.get(position);
         //asize = trampList.size();
         ///***********************calender***********************************************//
+        /**
         ImageGenerator mImageGenerator = new ImageGenerator(context);
 
 // Set the icon size to the generated in dip.
@@ -111,11 +122,24 @@ public class BookingAdapter extends ArrayAdapter<BookingClass> {
                 }, year, month, day);
                 mPickerDialog.show();
             }
-        });
+        });**/
         ///***********************calender***********************************************//
 
         abookingtime.setText(bookingclass.getCbtime());
         abookingaddress.setText(bookingclass.getCbaddress());
+
+
+        dsatcheckbox.setChecked(bookingclass.getSatchecked());
+        dsuncheckbox.setChecked(bookingclass.getSunchecked());
+        dmoncheckbox.setChecked(bookingclass.getMonchecked());
+        dtuscheckbox.setChecked(bookingclass.getTuschecked());
+        dwedcheckbox.setChecked(bookingclass.getWedchecked());
+        dthucheckbox.setChecked(bookingclass.getThuchecked());
+        dfricheckbox.setChecked(bookingclass.getFrichecked());
+        dsatcheckbox.setEnabled(false); dsuncheckbox.setEnabled(false); dmoncheckbox.setEnabled(false); dtuscheckbox.setEnabled(false);
+        dwedcheckbox.setEnabled(false); dthucheckbox.setEnabled(false); dfricheckbox.setEnabled(false);
+
+
         return listViewItem;
     }
 /**

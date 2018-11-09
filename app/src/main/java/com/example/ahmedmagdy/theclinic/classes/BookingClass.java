@@ -11,15 +11,45 @@ public class BookingClass {
     private String cbdoctorid;
     private String cblatitude;
     private String cblongitude;
-    public  BookingClass(){}
+    private Boolean satchecked;
+    private Boolean sunchecked;
+    private Boolean monchecked;
+    private Boolean tuschecked;
+    private Boolean wedchecked;
+    private Boolean thuchecked;
+    private Boolean frichecked;
 
-    public BookingClass(String cbid, String cbtime, String cbaddress,String cbdoctorid,String cblatitude,String cblongitude) {
+    public  BookingClass(){}
+    public BookingClass(String cbid, String cbtime, String cbaddress, String cbdoctorid, String cblatitude, String cblongitude, Boolean satchecked, Boolean sunchecked, Boolean monchecked, Boolean tuschecked, Boolean wedchecked, Boolean thuchecked, Boolean frichecked) {
         this.cbid = cbid;
         this.cbtime = cbtime;
         this.cbaddress = cbaddress;
         this.cbdoctorid = cbdoctorid;
         this.cblatitude = cblatitude;
         this.cblongitude = cblongitude;
+       this.satchecked = satchecked;
+         this.sunchecked = sunchecked;
+         this.monchecked = monchecked;
+         this.tuschecked = tuschecked;
+         this.wedchecked = wedchecked;
+         this.thuchecked = thuchecked;
+         this.frichecked = frichecked;
+    }
+
+    public BookingClass(String cbid, String cbtime, String cbaddress, String cbdoctorid, String cblatitude, String cblongitude) {
+        this.cbid = cbid;
+        this.cbtime = cbtime;
+        this.cbaddress = cbaddress;
+        this.cbdoctorid = cbdoctorid;
+        this.cblatitude = cblatitude;
+        this.cblongitude = cblongitude;
+       /** this.satchecked = satchecked;
+        this.sunchecked = sunchecked;
+        this.monchecked = monchecked;
+        this.tuschecked = tuschecked;
+        this.wedchecked = wedchecked;
+        this.thuchecked = thuchecked;
+        this.frichecked = frichecked;**/
     }
 
     public String getCbid() {
@@ -46,7 +76,6 @@ public class BookingClass {
         this.cbaddress = cbaddress;
     }
 
-
     public String getCbdoctorid() {
         return cbdoctorid;
     }
@@ -70,4 +99,83 @@ public class BookingClass {
     public void setCblongitude(String cblongitude) {
         this.cblongitude = cblongitude;
     }
+///////////////////////////////////////////
+public Boolean getSatchecked() {
+        if (satchecked == null)
+        return false;
+    else
+        return satchecked;
+}
+   public void setSatchecked(Boolean satchecked) {
+        this.satchecked = satchecked;
+    }
+
+    ///////////////////////////////////////////
+
+    public Boolean getSunchecked() {
+        if (sunchecked == null)
+            return false;
+        else
+            return sunchecked;
+    }
+    public void setSunchecked(Boolean sunchecked) {
+        this.sunchecked = sunchecked;
+    }
+    ///////////////////////////////////////////
+    public Boolean getMonchecked() {
+        if (monchecked == null)
+            return false;
+        else
+            return monchecked;
+    }
+
+    public void setMonchecked(Boolean monchecked) {
+        this.monchecked = monchecked;
+    }
+    ///////////////////////////////////////////
+    public Boolean getTuschecked() {
+        if (tuschecked == null)
+            return false;
+        else
+            return tuschecked;
+    }
+
+    public void setTuschecked(Boolean tuschecked) {
+        this.tuschecked = tuschecked;
+    }
+    ///////////////////////////////////////////
+    public Boolean getWedchecked() {
+        if (wedchecked == null)
+            return false;
+        else
+            return wedchecked;
+    }
+
+    public void setWedchecked(Boolean wedchecked) {
+        this.wedchecked = wedchecked;
+    }
+    ///////////////////////////////////////////
+    public Boolean getThuchecked() {
+        if (thuchecked == null)
+            return false;
+        else
+            return thuchecked;
+    }
+
+    public void setThuchecked(Boolean thuchecked) {
+        this.thuchecked = thuchecked;
+    }
+    ///////////////////////////////////////////
+    public Boolean getFrichecked() {
+        if (frichecked == null)
+            return false;
+        else
+            return frichecked;
+    }
+
+    public void setFrichecked(Boolean frichecked) {
+        this.frichecked = frichecked;
+    }
+    ///////////////////////////////////////////
+
 }
