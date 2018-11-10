@@ -86,6 +86,9 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
                    databaseDoctorFav.child(doctorclass.getcId()).setValue(doctorclass);
                    databaseDoctorFav.child(doctorclass.getcId()).child("checked").setValue(isChecked);
 
+                   databaseDoctorFav.setValue(doctorclass);
+                   databaseDoctorFav.child("checked").setValue(isChecked);
+
                   Toast.makeText(context, doctorclass.getcName()+" is added to your fav.", Toast.LENGTH_LONG).show();
                    Intent intent= new Intent(context, FavActivity.class);
                    context.startActivity(intent);
@@ -175,7 +178,11 @@ public class DoctorAdapter extends ArrayAdapter<DoctorFirebaseClass> implements 
                     if (mSearchList != null && mSearchList.size() > 0) {
                         for (final DoctorFirebaseClass tramp : mSearchList) {
                             if (tramp.getcCity().toLowerCase()
-                                    .contains(constraint.toString()))
+                                    .contains(constraint.toString()) ||
+                                    tramp.getcName().toLowerCase()
+                                            .contains(constraint.toString()) ||
+                                    tramp.getcSpecialty().toLowerCase()
+                                            .contains(constraint.toString()))
                                 resultsList.add(tramp);
                         }
                     }
