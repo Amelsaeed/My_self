@@ -26,6 +26,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
@@ -138,6 +139,16 @@ public class DoctorProfileActivity extends AppCompatActivity implements OnReques
         peditbox = (EditText) findViewById(R.id.peditbox);
         ppicuri = (ImageView) findViewById(R.id.edit_photo);
         paddbook = (TextView) findViewById(R.id.add);
+
+        // Test only
+        Button testBtn = findViewById(R.id.test_show_booking_list);
+        testBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DoctorProfileActivity.this,DoctorBookingsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         FirebaseUser user = mAuth.getCurrentUser();//mAuth.getCurrentUser().getUid()
         if (user != null) {

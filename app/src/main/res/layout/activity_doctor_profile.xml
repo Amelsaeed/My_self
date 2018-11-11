@@ -236,6 +236,17 @@
             android:layout_height="wrap_content"
                android:paddingLeft="10dp"
                />
+
+        <Button
+            android:id="@+id/test_show_booking_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="19dp"
+            android:text="test show booking"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"/>
         <ProgressBar
             android:id="@+id/booking_progress_bar"
             android:layout_width="wrap_content"

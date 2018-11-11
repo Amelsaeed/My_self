@@ -30,9 +30,10 @@
         <activity android:name=".activities.AllDoctorActivity" />
         <activity android:name=".activities.AddDoctorActivity" />
         <activity android:name=".activities.DoctorProfileActivity" />
-        <activity android:name=".activities.UserProfileActivity"></activity>
+        <activity android:name=".activities.UserProfileActivity"/>
         <activity android:name=".activities.DoctorBookingsActivity"/>
-        <activity android:name=".activities.FavActivity"></activity>
+        <activity android:name=".activities.FavActivity"/>
+        <activity android:name=".activities.NoteActivity" />
     </application>
 
 </manifest>

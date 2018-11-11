@@ -11,9 +11,6 @@ import java.util.Date;
 
 public class UtilClass {
 
-
-
-
     // calculate age from birthday
     public static String calculateAgeFromDate(String date) {
 
@@ -59,11 +56,7 @@ public class UtilClass {
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return ni != null;
     }
 
     // get the name of day from date

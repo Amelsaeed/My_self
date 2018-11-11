@@ -1,16 +1,31 @@
 package com.example.ahmedmagdy.theclinic.Adapters;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ahmedmagdy.theclinic.R;
+import com.example.ahmedmagdy.theclinic.activities.NoteActivity;
 import com.example.ahmedmagdy.theclinic.classes.BookingTimesClass;
+import com.example.ahmedmagdy.theclinic.classes.NoteClass;
+import com.example.ahmedmagdy.theclinic.classes.UtilClass;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +33,7 @@ import java.util.List;
 public class BookingExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context mContext;
+    private FirebaseAuth mAuth;
     private List<BookingTimesClass> mListDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<BookingTimesClass, List<BookingTimesClass>> mListDataChild;
@@ -26,6 +42,7 @@ public class BookingExpandableListAdapter extends BaseExpandableListAdapter {
         this.mContext = _context;
         this.mListDataHeader = _listDataHeader;
         this.mListDataChild = _listDataChild;
+        this.mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -83,7 +100,7 @@ public class BookingExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean b, View convertView, ViewGroup viewGroup) {
+    public View getChildView(int groupPosition, final int childPosition, boolean b, View convertView, ViewGroup viewGroup) {
 
         final BookingTimesClass currentChild = (BookingTimesClass) getChild(groupPosition, childPosition);
 
@@ -99,11 +116,117 @@ public class BookingExpandableListAdapter extends BaseExpandableListAdapter {
 
         patientName.setText(currentChild.getCtname());
         patientAge.setText(currentChild.getCtage());
+
+        // notes dialog show select dialog on click list item
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog("select",currentChild,childPosition);
+            }
+        });
+
         return convertView;
     }
 
     @Override
     public boolean isChildSelectable(int i, int i1) {
         return true;
+    }
+
+    /**
+     *  Show or Add item data
+     * @param item
+     * @param position index of item in list
+     */
+    private void showDialog(String type, final BookingTimesClass item, final int position) {
+        final Dialog dialog = new Dialog(mContext);
+        final String userId = mAuth.getCurrentUser().getUid();
+        Button create,show,cancel,submit;
+
+        final DatabaseReference database = FirebaseDatabase.getInstance().getReference("Notes");
+
+        // set dialog view
+        if (type.equals("select")) {
+            dialog.setContentView(R.layout.select_note_dialog);
+            // set button
+            create = dialog.findViewById(R.id.add_btn_select_note_dialog);
+            show = dialog.findViewById(R.id.show_btn_select_note_dialog);
+            cancel = dialog.findViewById(R.id.cancel_btn_select_note_dialog);
+            // show all notes
+            show.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext,NoteActivity.class);
+                    intent.putExtra("id",item.getCtid());
+                    intent.putExtra("name",item.getCtname());
+                    mContext.startActivity(intent);
+                }
+            });
+            // add new note view
+            create.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDialog("create",item,position);
+                    dialog.dismiss();
+                }
+            });
+            // cancel dialog
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                 public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+        } else if (type.equals("create")) {
+            dialog.setContentView(R.layout.add_note_dialog);
+            //set btn
+            submit = dialog.findViewById(R.id.submit_add_note);
+            cancel = dialog.findViewById(R.id.cancel_add_note);
+            // on submit create new note
+            submit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    EditText editText = dialog.findViewById(R.id.text_data_add_note);
+                    String text = editText.getText().toString();
+                    String date = UtilClass.getInstanceDate();
+                    // check if edit text not empty
+                    if (text.isEmpty()) {
+                        editText.setError("Text is required");
+                        editText.requestFocus();
+                        return;
+                    }
+                    // add new note to database
+                    DatabaseReference reference = database.push();
+                    String noteId = reference.getKey();
+                    NoteClass note = new NoteClass(noteId,text,item.getCtid(),userId,date);
+
+                    database.child(noteId).setValue(note);
+                    Toast.makeText(mContext,"Note Added.",Toast.LENGTH_SHORT).show();
+                    // feed back message
+                    /*
+                    if(database.child(noteId).setValue(note).isSuccessful())
+                        // success
+                        Toast.makeText(mContext,"Note Added.",Toast.LENGTH_SHORT).show();
+                    else
+                        // fail
+                        Toast.makeText(mContext,"Note Adding Fail, try again.",Toast.LENGTH_SHORT).show();
+                    */
+                    // clear dialog
+                    dialog.dismiss();
+                }
+            });
+            // cancel dialog
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+        }
+
+        // disable dialog close if tab out of it
+        dialog.setCanceledOnTouchOutside(false);
+        // show dialog view
+        dialog.show();
     }
 }
