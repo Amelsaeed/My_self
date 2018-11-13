@@ -40,6 +40,7 @@ public class AllDoctorActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private DatabaseReference databaseDoctor;
 
+    private ImageView btnproceed;
 
     SearchView searchView;
    // Button addTrampButton;
@@ -64,6 +65,15 @@ public class AllDoctorActivity extends AppCompatActivity {
         doctorList=new ArrayList<>();
         listViewDoctor.setTextFilterEnabled(true);
         removeFocus();
+        btnproceed= (ImageView) findViewById(R.id.map);
+
+        btnproceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(AllDoctorActivity.this,MapsActivity.class);
+                startActivity(i);
+            }
+        });
 
         addDoctorButton.setOnClickListener(new View.OnClickListener() {
             @Override

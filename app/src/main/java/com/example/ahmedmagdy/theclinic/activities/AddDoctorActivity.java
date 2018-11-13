@@ -94,7 +94,6 @@ public class AddDoctorActivity extends AppCompatActivity {
             }
         });
 
-
         addDoctorTextView.setEnabled(false);
 
         addDoctorTextView.setOnClickListener(new View.OnClickListener() {
