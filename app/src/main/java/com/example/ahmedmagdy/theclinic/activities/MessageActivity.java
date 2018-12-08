@@ -426,7 +426,7 @@ public class MessageActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Token token = snapshot.getValue(Token.class);
                     Data data = new Data(fuser.getUid(), R.mipmap.ic_person,
-                            username + ": " + message, "New Message", userid);
+                            username + ": " + message, "New Message", userid,"m");
 
                     Sender sender = new Sender(data, token.getToken());
 
